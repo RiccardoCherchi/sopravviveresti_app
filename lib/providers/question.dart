@@ -44,7 +44,7 @@ class Questions with ChangeNotifier {
           "content": data['wrong_answer'],
           "type": QuestionType.wrong,
         }
-      ],
+      ]..shuffle(),
     );
     print(_activeQuestion.questions);
     notifyListeners();
