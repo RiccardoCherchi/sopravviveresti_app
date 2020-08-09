@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import '../providers/categories.dart';
 import '../providers/question.dart';
 
+import '../screens/question.dart';
+
 import './question.dart';
 
 class CategoriesScreen extends StatelessWidget {
@@ -25,7 +27,7 @@ class CategoriesScreen extends StatelessWidget {
             Container(
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage('assets/images/background.jpg'),
+                  image: AssetImage('assets/images/background2.jpg'),
                 ),
               ),
             ),
@@ -34,37 +36,25 @@ class CategoriesScreen extends StatelessWidget {
               alignment: Alignment.topCenter,
               child: Column(
                 children: [
-                  Container(
-                    child: Column(
-                      children: [
-                        Text(
-                          "GIOCA",
-                          style: TextStyle(
-                            color: Colors.red,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 30,
-                          ),
-                        ),
-                        Container(
-                          height: 100,
-                          child: ListView.builder(
-                            itemBuilder: (_, i) => GestureDetector(
-                              onTap: () =>
-                                  _loadQuestion(_categories.categories[i].id),
-                              child: Text(
-                                "${_categories.categories[i].name}",
-                                style: TextStyle(color: Colors.red),
-                              ),
-                            ),
-                            itemCount: _categories.categories.length,
-                          ),
-                        )
-                      ],
+                  Text(
+                    "GIOCA",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 30,
                     ),
                   ),
                   Container(
-                    child: Column(
-                      children: [],
+                    margin: const EdgeInsets.symmetric(vertical: 80),
+                    child: Image.asset('assets/images/routePath.png'),
+                  ),
+                  Expanded(
+                    child: Container(
+                      width: double.infinity,
+                      child: CustomPaint(
+                        painter: AnswerContainer(),
+                        child: Text('sos'),
+                      ),
                     ),
                   )
                 ],

@@ -37,25 +37,26 @@ class Answer extends StatelessWidget {
       // ),
       child: Container(
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            border: active
-                ? Border.all(
-                    color: _getColor(context, questionType),
-                    width: 2,
-                  )
-                : null,
-            boxShadow: [
-              BoxShadow(
-                blurRadius: 7,
-                spreadRadius: 1,
-                color: Colors.grey[400],
-              ),
-              BoxShadow(
-                blurRadius: 0,
-                spreadRadius: 0,
-                color: Colors.white,
-              ),
-            ]),
+          borderRadius: BorderRadius.circular(10),
+          border: active
+              ? Border.all(
+                  color: getColor(context, questionType),
+                  width: 2,
+                )
+              : null,
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 7,
+              spreadRadius: 1,
+              color: Colors.grey[400],
+            ),
+            BoxShadow(
+              blurRadius: 0,
+              spreadRadius: 0,
+              color: Colors.white,
+            ),
+          ],
+        ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -73,7 +74,7 @@ class Answer extends StatelessWidget {
                       ? Icons.done
                       : Icons.close,
                   size: 30,
-                  color: _getColor(context, questionType),
+                  color: getColor(context, questionType),
                 ),
               )
           ],
@@ -83,7 +84,7 @@ class Answer extends StatelessWidget {
   }
 }
 
-Color _getColor(BuildContext context, QuestionType questionType) {
+Color getColor(BuildContext context, QuestionType questionType) {
   return questionType == QuestionType.correct
       ? Theme.of(context).primaryColor
       : Theme.of(context).errorColor;

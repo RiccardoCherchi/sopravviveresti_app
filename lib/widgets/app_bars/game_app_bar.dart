@@ -6,7 +6,7 @@ import 'package:timer_count_down/timer_count_down.dart';
 Widget buildGameAppBar(BuildContext context, {@required Countdown countdown}) {
   final _size = MediaQuery.of(context).size;
   return PreferredSize(
-    preferredSize: Size.fromHeight(80.0),
+    preferredSize: Size.fromHeight(100.0),
     child: Container(
       padding: EdgeInsets.only(
         left: _size.width * .02,
@@ -24,16 +24,17 @@ Widget buildGameAppBar(BuildContext context, {@required Countdown countdown}) {
               color: Colors.white,
             ),
             Container(
-              padding: const EdgeInsets.all(15),
+              padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.3),
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: Colors.white,
-                    width: 2,
-                  )),
+                color: Colors.white.withOpacity(0.3),
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Colors.white,
+                  width: 2,
+                ),
+              ),
               child: Container(
-                width: 20,
+                width: 40,
                 alignment: Alignment.center,
                 child: countdown,
               ),

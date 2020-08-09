@@ -27,8 +27,8 @@ class Questions with ChangeNotifier {
   Future getNewQuestion([int categoryId]) async {
     final response = await http.get(
       categoryId != null
-          ? "http://192.168.0.104:8000/question?category=$categoryId"
-          : "http://192.168.0.104:8000/question",
+          ? "http://192.168.0.103:8000/question?category=$categoryId"
+          : "http://192.168.0.103:8000/question",
     );
     final data = json.decode(utf8.decode(response.bodyBytes));
     print(data);

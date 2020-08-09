@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import './screens/home.dart';
 import './screens/categories.dart';
 import './screens/question.dart';
+import './screens/explanation.dart';
 
 import './providers/question.dart';
 import './providers/categories.dart';
@@ -35,6 +36,7 @@ class MyApp extends StatelessWidget {
         routes: {
           CategoriesScreen.routeName: (_) => CategoriesScreen(),
           Question.routeName: (_) => Question(),
+          Explanation.routeName: (_) => Explanation(),
         },
       ),
     );
