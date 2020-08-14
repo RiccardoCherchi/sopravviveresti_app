@@ -1,5 +1,3 @@
-// import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 
@@ -19,7 +17,7 @@ Widget buildGameAppBar(BuildContext context, {@required Countdown countdown}) {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Icon(
-              Icons.sync,
+              Icons.share,
               size: 40,
               color: Colors.white,
             ),
@@ -39,10 +37,17 @@ Widget buildGameAppBar(BuildContext context, {@required Countdown countdown}) {
                 child: countdown,
               ),
             ),
-            Icon(
-              Icons.home,
-              size: 40,
-              color: Colors.white,
+            IconButton(
+              icon: Icon(
+                Icons.home,
+                size: 40,
+                color: Colors.white,
+              ),
+              onPressed: () => Navigator.pushNamedAndRemoveUntil(
+                context,
+                '/',
+                (route) => false,
+              ),
             ),
           ],
         ),

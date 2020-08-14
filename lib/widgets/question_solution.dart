@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 class QuestionSolutionContainer extends StatelessWidget {
   final String content;
+  final double fontSize;
 
-  QuestionSolutionContainer(this.content);
+  QuestionSolutionContainer(this.content, {this.fontSize = 22});
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -32,7 +33,7 @@ class QuestionSolutionContainer extends StatelessWidget {
           content,
           textAlign: TextAlign.center,
           style: TextStyle(
-            fontSize: 22,
+            fontSize: fontSize,
           ),
         ),
       ),

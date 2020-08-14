@@ -32,6 +32,9 @@ dependencies:
   provider: ^4.3.1
   timer_count_down: ^1.0.4+1
   font_awesome_flutter: ^8.8.1
+  sqflite: ^1.3.1
+  path: ^1.7.0
+  fluttertoast: ^4.0.1
 
 
 dev_dependencies:
@@ -54,6 +57,7 @@ flutter:
     - assets/images/background.jpg
     - assets/images/background2.jpg
     - assets/images/routePath.png
+    - assets/images/categories.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

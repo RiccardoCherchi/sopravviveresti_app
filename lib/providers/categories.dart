@@ -22,7 +22,7 @@ class Categories with ChangeNotifier {
   }
 
   Future getCateogires() async {
-    final response = await http.get("http://192.168.0.103:8000/categories");
+    final response = await http.get("http://68.183.71.76:8000/categories");
     final data = json.decode(utf8.decode(response.bodyBytes));
     print(data);
     List<Category> _loadedCateogires = [];

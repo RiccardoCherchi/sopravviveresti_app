@@ -8,7 +8,7 @@ import '../providers/question.dart';
 import '../widgets/app_bars/game_app_bar.dart';
 import '../widgets/question_solution.dart';
 import '../widgets/answer.dart';
-import '../widgets/third_button.dart';
+import '../widgets/custom_button.dart';
 
 import '../screens/explanation.dart';
 
@@ -31,7 +31,7 @@ class _QuestionState extends State<Question> {
       if (_active == false) {
         setState(() {
           _active = true;
-          _choosed = _questions.activeQuestion.questions.indexOf(question);
+          _choosed = _questions.activeQuestion.answers.indexOf(question);
         });
       }
     }
@@ -47,7 +47,7 @@ class _QuestionState extends State<Question> {
       appBar: buildGameAppBar(
         context,
         countdown: Countdown(
-          seconds: 10,
+          seconds: 30,
           build: (_, time) => Text(
             time.toStringAsFixed(0),
             style: TextStyle(
@@ -80,7 +80,7 @@ class _QuestionState extends State<Question> {
                     Container(
                       padding: const EdgeInsets.only(top: 20),
                       child: Column(
-                        children: _questions.activeQuestion.questions
+                        children: _questions.activeQuestion.answers
                             .map(
                               (e) => Container(
                                 margin:
@@ -89,7 +89,7 @@ class _QuestionState extends State<Question> {
                                   onTap: () => _resolve(e),
                                   child: Answer(
                                     active: _active,
-                                    choosed: _questions.activeQuestion.questions
+                                    choosed: _questions.activeQuestion.answers
                                             .indexOf(e) ==
                                         _choosed,
                                     content: e['content'],
@@ -115,8 +115,7 @@ class _QuestionState extends State<Question> {
                     if (_active == true && _choosed != null)
                       Container(
                         child: Text(
-                          _questions.activeQuestion.questions[_choosed]
-                                      ['type'] ==
+                          _questions.activeQuestion.answers[_choosed]['type'] ==
                                   QuestionType.correct
                               ? "Risposta esatta!"
                               : "Risposta errata!",
@@ -124,8 +123,8 @@ class _QuestionState extends State<Question> {
                                 fontWeight: FontWeight.w500,
                                 color: getColor(
                                     context,
-                                    _questions.activeQuestion
-                                        .questions[_choosed]['type']),
+                                    _questions.activeQuestion.answers[_choosed]
+                                        ['type']),
                               ),
                         ),
                       ),
@@ -141,8 +140,8 @@ class _QuestionState extends State<Question> {
                       ),
                     SizedBox(height: 20),
                     if (_active)
-                      ThirdButton(
-                        _choosed != null ? "Scopri perche" : "Spiegazione",
+                      CustomButton(
+                        _choosed != null ? "Scopri perchè" : "Soluzione",
                         icon: Icons.arrow_forward,
                         onPressed: () {
                           Navigator.of(context)

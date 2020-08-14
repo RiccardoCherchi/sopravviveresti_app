@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../widgets/third_button.dart';
+import '../widgets/custom_button.dart';
 import '../widgets/question_solution.dart';
 import '../widgets/app_bars/explanation_bar.dart';
 
@@ -16,6 +16,8 @@ class Explanation extends StatelessWidget {
         .activeQuestion
         .explanation;
 
+    final String _localExplanation = ModalRoute.of(context).settings.arguments;
+
     final _size = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -26,7 +28,9 @@ class Explanation extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              QuestionSolutionContainer(_explanation),
+              QuestionSolutionContainer(
+                _localExplanation == null ? _explanation : _localExplanation,
+              ),
               SizedBox(height: 20),
               Container(
                 width: _size.width * .8,
@@ -37,7 +41,7 @@ class Explanation extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 20),
-              ThirdButton(
+              CustomButton(
                 "Fine",
                 onPressed: () {
                   Navigator.of(context)

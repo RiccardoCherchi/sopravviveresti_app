@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../styles/sopravviveresti_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/categories.dart';
+import '../providers/question.dart';
 
 import '../widgets/home_button.dart';
 
 import '../screens/categories.dart';
+import '../screens/favorites.dart';
 
 class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // remove
     final _cateories = Provider.of<Categories>(context);
+    final _questions = Provider.of<Questions>(context);
+
+    final _size = MediaQuery.of(context).size;
 
     return Scaffold(
       body: Stack(
@@ -22,6 +25,7 @@ class Home extends StatelessWidget {
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: AssetImage('assets/images/background.jpg'),
+                fit: BoxFit.cover,
               ),
             ),
           ),
@@ -38,9 +42,11 @@ class Home extends StatelessWidget {
                   },
                 ),
                 HomeButton(
-                  text: 'Profilo',
-                  icon: FontAwesomeIcons.userAlt,
-                  onPressed: () {},
+                  text: 'Preferiti',
+                  icon: Icons.star,
+                  onPressed: () {
+                    Navigator.of(context).pushNamed(Favorites.routeName);
+                  },
                 )
               ],
             ),
@@ -48,12 +54,31 @@ class Home extends StatelessWidget {
           Container(
             margin: const EdgeInsets.only(top: 50),
             alignment: Alignment.topCenter,
-            child: Text(
-              'LOGO',
-              style: Theme.of(context)
-                  .textTheme
-                  .headline5
-                  .copyWith(fontWeight: FontWeight.bold),
+            child: Text('LOGO', style: Theme.of(context).textTheme.headline5),
+          ),
+          Positioned(
+            top: _size.height * .2,
+            right: 0,
+            child: Container(
+              height: 50,
+              width: 60,
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(20),
+                  topLeft: Radius.circular(20),
+                ),
+              ),
+              child: Center(
+                child: IconButton(
+                  icon: Icon(
+                    Icons.settings,
+                    color: Colors.white,
+                    size: 35,
+                  ),
+                  onPressed: null,
+                ),
+              ),
             ),
           )
         ],

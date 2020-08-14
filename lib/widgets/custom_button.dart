@@ -1,19 +1,27 @@
 import 'package:flutter/material.dart';
 
-class ThirdButton extends StatelessWidget {
+class CustomButton extends StatelessWidget {
   final String content;
   final Function onPressed;
   final IconData icon;
+  final Color color;
+  final bool disable;
 
-  ThirdButton(this.content, {@required this.onPressed, this.icon});
+  CustomButton(
+    this.content, {
+    @required this.onPressed,
+    this.icon,
+    this.color,
+    this.disable,
+  });
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 40,
       width: MediaQuery.of(context).size.width * .6,
       child: RaisedButton(
-        onPressed: onPressed,
-        disabledColor: Colors.white,
+        onPressed: disable == true ? null : onPressed,
+        disabledColor: Colors.black38.withOpacity(.2),
         disabledTextColor: Colors.black,
         hoverColor: Colors.transparent,
         focusColor: Colors.transparent,
@@ -22,7 +30,7 @@ class ThirdButton extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
           side: BorderSide(
-            color: Colors.yellow,
+            color: color != null ? color : Colors.yellow,
             width: 2,
           ),
         ),

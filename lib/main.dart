@@ -5,6 +5,7 @@ import './screens/home.dart';
 import './screens/categories.dart';
 import './screens/question.dart';
 import './screens/explanation.dart';
+import './screens/favorites.dart';
 
 import './providers/question.dart';
 import './providers/categories.dart';
@@ -14,7 +15,6 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -28,15 +28,22 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          primaryColor: Color(0xff6FCF97),
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-        ),
+            primaryColor: Color(0xff6FCF97),
+            visualDensity: VisualDensity.adaptivePlatformDensity,
+            textTheme: TextTheme(
+              headline5: Theme.of(context)
+                  .textTheme
+                  .headline5
+                  .copyWith(fontWeight: FontWeight.bold),
+            )),
         home: Home(),
         routes: {
           CategoriesScreen.routeName: (_) => CategoriesScreen(),
           Question.routeName: (_) => Question(),
           Explanation.routeName: (_) => Explanation(),
+          Favorites.routeName: (_) => Favorites(),
         },
       ),
     );
