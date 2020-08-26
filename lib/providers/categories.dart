@@ -24,13 +24,14 @@ class Categories with ChangeNotifier {
   Future getCateogires() async {
     final response = await http.get("http://68.183.71.76:8000/categories");
     final data = json.decode(utf8.decode(response.bodyBytes));
-    print(data);
     List<Category> _loadedCateogires = [];
     data.forEach((e) {
       _loadedCateogires.add(Category.fromJson(e));
     });
-    print(_loadedCateogires);
     _categories = _loadedCateogires;
+    _categories.forEach((element) {
+      print("${element.id} ${element.name}");
+    });
     notifyListeners();
   }
 }

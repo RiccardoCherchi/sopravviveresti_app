@@ -74,4 +74,13 @@ class Questions with ChangeNotifier {
             ))
         .toList();
   }
+
+  Future deleteLocallySavedQuestion(int id) async {
+    await DB.delete('user_fav', id);
+  }
+
+  Future checkSavedQuestion(int id) async {
+    final test = await DB.filterById('user_fav', id);
+    return test != null;
+  }
 }

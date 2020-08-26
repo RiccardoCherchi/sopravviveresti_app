@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 class QuestionSolutionContainer extends StatelessWidget {
   final String content;
   final double fontSize;
+  final bool solution;
 
-  QuestionSolutionContainer(this.content, {this.fontSize = 22});
+  QuestionSolutionContainer(this.content,
+      {this.fontSize = 22, this.solution = false});
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -29,12 +31,38 @@ class QuestionSolutionContainer extends StatelessWidget {
             ),
           ],
         ),
-        child: Text(
-          content,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: fontSize,
-          ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              content,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: fontSize,
+              ),
+            ),
+            if (solution)
+              Container(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Soluzione',
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    ),
+                    SizedBox(width: 5),
+                    Icon(
+                      Icons.arrow_forward,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ],
+                ),
+              )
+          ],
         ),
       ),
     );

@@ -7,7 +7,7 @@ import './screens/question.dart';
 import './screens/explanation.dart';
 import './screens/favorites.dart';
 
-import './providers/question.dart';
+import 'providers/questions.dart';
 import './providers/categories.dart';
 
 void main() {
@@ -31,6 +31,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
             primaryColor: Color(0xff6FCF97),
+            accentColor: Colors.yellow,
             visualDensity: VisualDensity.adaptivePlatformDensity,
             textTheme: TextTheme(
               headline5: Theme.of(context)

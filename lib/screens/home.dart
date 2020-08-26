@@ -3,7 +3,7 @@ import '../styles/sopravviveresti_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/categories.dart';
-import '../providers/question.dart';
+import '../providers/questions.dart';
 
 import '../widgets/home_button.dart';
 

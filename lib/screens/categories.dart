@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../providers/categories.dart';
-import '../providers/question.dart';
+import '../providers/questions.dart';
 
 import '../widgets/custom_button.dart';
 
@@ -23,6 +24,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   Widget build(BuildContext context) {
     final _questions = Provider.of<Questions>(context, listen: false);
     final _categories = Provider.of<Categories>(context, listen: false);
+
+    final _size = MediaQuery.of(context).size;
 
     void _loadQuestion([int categoryId]) async {
       await _questions.getNewQuestion(categoryId);
@@ -67,71 +70,83 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
             Container(
               margin: const EdgeInsets.only(top: 60),
               alignment: Alignment.topCenter,
-              child: ScrollConfiguration(
-                behavior: MyScrollBehavior(),
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Text(
-                        "GIOCA",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 30,
+              child: Column(
+                children: [
+                  Container(
+                    child: Column(
+                      children: [
+                        Text(
+                          "GIOCA",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 30,
+                          ),
                         ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.symmetric(vertical: 100),
-                        child: Image.asset('assets/images/routePath.png'),
-                      ),
-                      Container(
-                        width: double.infinity,
-                        child: CustomPaint(
-                            painter: AnswerContainer(),
-                            child: Container(
-                              child: Column(
-                                children: [
-                                  Container(
-                                    margin: const EdgeInsets.symmetric(
-                                        vertical: 35),
-                                    child: CustomButton(
-                                      _categoryId == null
-                                          ? _random ? "Casuale" : "Categorie"
-                                          : _categories
-                                              .categories[_categoryId - 1].name,
-                                      color: Theme.of(context).primaryColor,
-                                      icon: _categoryId == null && !_random
-                                          ? Icons.arrow_forward
-                                          : Icons.check,
-                                      onPressed: _openCategoryChooser,
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: const EdgeInsets.symmetric(
-                                        vertical: 32),
-                                    child: Image.asset(
-                                      'assets/images/categories.png',
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: const EdgeInsets.symmetric(
-                                        vertical: 32),
-                                    child: CustomButton(
-                                      "Gioca",
-                                      disable: _random == false &&
-                                          _categoryId == null,
-                                      onPressed: () =>
-                                          _loadQuestion(_categoryId),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            )),
-                      )
-                    ],
+                        Container(
+                          margin: EdgeInsets.symmetric(
+                            vertical: _size.height * .08,
+                          ),
+                          child: SvgPicture.asset(
+                            'assets/images/routePath.svg',
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
+                  Expanded(
+                    child: Container(
+                      width: double.infinity,
+                      child: CustomPaint(
+                          painter: AnswerContainer(),
+                          child: Container(
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  height: _size.height * .05,
+                                ),
+                                Container(
+                                  child: CustomButton(
+                                    _categoryId == null
+                                        ? _random ? "Casuale" : "Categorie"
+                                        : _categories
+                                            .categories[_categoryId - 1].name,
+                                    color: Theme.of(context).primaryColor,
+                                    icon: _categoryId == null && !_random
+                                        ? Icons.arrow_forward
+                                        : Icons.check,
+                                    onPressed: _openCategoryChooser,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: _size.height * .05,
+                                ),
+                                Container(
+                                  child: SvgPicture.asset(
+                                    'assets/images/categories.svg',
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: _size.height * .05,
+                                ),
+                                Container(
+                                  child: CustomButton(
+                                    "Gioca",
+                                    disable:
+                                        _random == false && _categoryId == null,
+                                    onPressed: () => _loadQuestion(_categoryId),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: _size.height * .05,
+                                ),
+                              ],
+                            ),
+                          )),
+                    ),
+                  )
+                ],
               ),
             ),
           ],
@@ -139,12 +154,6 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
       ),
     );
   }
-}
-
-class MyScrollBehavior extends ScrollBehavior {
-  @override
-  ScrollPhysics getScrollPhysics(BuildContext context) =>
-      ClampingScrollPhysics();
 }
 
 class CategoryModal extends StatelessWidget {
@@ -206,12 +215,13 @@ class CategoryModal extends StatelessWidget {
         floatingActionButton: Padding(
           padding: const EdgeInsets.only(bottom: 45.0),
           child: FloatingActionButton(
-            splashColor: Colors.yellow[400],
+            splashColor: Colors.transparent,
             elevation: 5,
             backgroundColor: Theme.of(context).primaryColor,
             onPressed: () => Navigator.of(context).pop(),
             child: Icon(
               Icons.close,
+              color: Colors.white,
               size: 35,
             ),
           ),

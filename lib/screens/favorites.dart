@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/question.dart';
+import '../providers/questions.dart';
 
 import '../widgets/question_solution.dart';
 
@@ -16,6 +16,7 @@ class Favorites extends StatefulWidget {
 
 class _FavoritesState extends State<Favorites> {
   List<QuestionData> _questions;
+  bool _loaded = false;
 
   @override
   void initState() {
@@ -28,6 +29,7 @@ class _FavoritesState extends State<Favorites> {
         .getLocallySavedQuestion();
     setState(() {
       _questions = questions;
+      _loaded = true;
     });
   }
 
@@ -58,34 +60,31 @@ class _FavoritesState extends State<Favorites> {
               mainAxisAlignment: MainAxisAlignment.end,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: _size.width * .05),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      IconButton(
-                        iconSize: 30,
-                        icon: Icon(
-                          Icons.arrow_back,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                        onPressed: () => Navigator.of(context).pop(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    IconButton(
+                      iconSize: 30,
+                      icon: Icon(
+                        Icons.arrow_back,
+                        color: Theme.of(context).primaryColor,
                       ),
-                      Text(
-                        'SOLUZIONI SALVATE',
-                        style: Theme.of(context).textTheme.headline5.copyWith(
-                              color: Theme.of(context).primaryColor,
-                            ),
-                      ),
-                    ],
-                  ),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                    Text(
+                      'SOLUZIONI SALVATE',
+                      style: Theme.of(context).textTheme.headline5.copyWith(
+                            color: Theme.of(context).primaryColor,
+                          ),
+                    ),
+                  ],
                 ),
                 Container(
-                  width: _size.width * .6,
+                  width: _size.width * .8,
                   margin: const EdgeInsets.only(top: 10, bottom: 20),
                   child: Text(
                     "Salva le soluzioni che preferisci per conservarle e consultarle quando vuoi",
-                    textAlign: TextAlign.center,
+                    // textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 18,
                     ),
@@ -94,38 +93,51 @@ class _FavoritesState extends State<Favorites> {
               ],
             ),
           ),
-          Center(
-            child: Container(
-              width: _size.width * .8,
-              margin: EdgeInsets.only(
-                top: _size.height * .25,
-              ),
-              child: _questions != null
-                  ? ListView.builder(
-                      physics: BouncingScrollPhysics(),
-                      padding: EdgeInsets.zero,
-                      itemBuilder: (_, i) => Container(
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).pushNamed(
-                                Explanation.routeName,
-                                arguments: _questions[i].explanation);
-                          },
-                          child: QuestionSolutionContainer(
-                            _questions[i].situation,
-                            fontSize: 18,
+          _loaded
+              ? _questions.length > 0
+                  ? Center(
+                      child: Container(
+                          width: _size.width * .8,
+                          margin: EdgeInsets.only(
+                            top: _size.height * .25,
                           ),
-                        ),
-                      ),
-                      itemCount: _questions.length,
+                          child: ListView.builder(
+                            physics: BouncingScrollPhysics(),
+                            padding: EdgeInsets.zero,
+                            itemBuilder: (_, i) => Container(
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context).pushNamed(
+                                      Explanation.routeName,
+                                      arguments: {
+                                        "id": _questions[i].id,
+                                        "explanation":
+                                            _questions[i].explanation,
+                                        "status": true,
+                                      });
+                                },
+                                child: QuestionSolutionContainer(
+                                  _questions[i].situation,
+                                  fontSize: 18,
+                                  solution: true,
+                                ),
+                              ),
+                            ),
+                            itemCount: _questions.length,
+                          )),
                     )
                   : Center(
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      child: Container(
+                        child: QuestionSolutionContainer(
+                          "Ancora nessuna soluzione salvata :( \nClicca sulla stellina in alto a sinistra nella schermata delle soluzioni per salvarne una!",
+                        ),
                       ),
-                    ),
-            ),
-          )
+                    )
+              : Center(
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  ),
+                )
         ],
       ),
     );

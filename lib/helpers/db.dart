@@ -24,4 +24,14 @@ class DB {
     final db = await DB.database();
     return db.query(table);
   }
+
+  static Future delete(String table, int id) async {
+    final db = await DB.database();
+    db.delete(table, where: 'id = ?', whereArgs: [id]);
+  }
+
+  static Future filterById(String table, int id) async {
+    final db = await DB.database();
+    return db.rawQuery('select * from $table where id = $id');
+  }
 }

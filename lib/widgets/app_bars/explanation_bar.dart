@@ -1,23 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
-import '../../providers/question.dart';
+import '../../providers/questions.dart';
 
-Widget buildExplanationppBar(BuildContext context) {
-  void _saveQuestion() {
-    Provider.of<Questions>(context, listen: false).saveCurrentQuestionLocally();
-    Fluttertoast.showToast(
-      msg: "Situazione salvata!",
-      backgroundColor: Colors.white.withOpacity(.8),
-      textColor: Colors.black,
-      toastLength: Toast.LENGTH_SHORT,
-      fontSize: 22,
-      gravity: ToastGravity.TOP,
+SnackBar buildSnackBar(BuildContext context, String content) {
+  return SnackBar(
+    content: Text(
+      content,
+      style: TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.w500,
+      ),
+    ),
+    backgroundColor: Theme.of(context).primaryColor,
+  );
+}
+
+Widget buildExplanationppBar(
+  BuildContext context, {
+  bool status = false,
+  int id,
+  @required GlobalKey<ScaffoldState> scaffoldKey,
+}) {
+  void _saveQuestion() async {
+    final questions = Provider.of<Questions>(context, listen: false);
+
+    await questions.saveCurrentQuestionLocally();
+    scaffoldKey.currentState.removeCurrentSnackBar();
+    scaffoldKey.currentState.showSnackBar(
+      buildSnackBar(context, "Soluzione salvata!"),
+    );
+  }
+
+  void _removeQuestion() async {
+    final questions = Provider.of<Questions>(context, listen: false);
+
+    await questions.deleteLocallySavedQuestion(id);
+    scaffoldKey.currentState.removeCurrentSnackBar();
+    scaffoldKey.currentState.showSnackBar(
+      buildSnackBar(context, "Soluzione rimossa!"),
     );
   }
 
   final _size = MediaQuery.of(context).size;
+
   return PreferredSize(
     preferredSize: Size.fromHeight(100.0),
     child: Container(
@@ -31,13 +57,18 @@ Widget buildExplanationppBar(BuildContext context) {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            IconButton(
-              icon: Icon(
-                Icons.star,
-                size: 40,
-                color: Colors.white,
-              ),
-              onPressed: _saveQuestion,
+            // IconButton(
+            //   icon: Icon(
+            //     status ? Icons.star : Icons.star_border,
+            //     size: 40,
+            //     color: Colors.white,
+            //   ),
+            //   onPressed: _saveQuestion,
+            // ),
+            StarIcon(
+              status,
+              save: _saveQuestion,
+              remove: _removeQuestion,
             ),
             Container(
               child: Text(
@@ -65,4 +96,51 @@ Widget buildExplanationppBar(BuildContext context) {
       ),
     ),
   );
+}
+
+class StarIcon extends StatefulWidget {
+  final bool status;
+  final Function save;
+  final Function remove;
+
+  StarIcon(this.status, {@required this.save, @required this.remove});
+  @override
+  _StarIconState createState() => _StarIconState();
+}
+
+class _StarIconState extends State<StarIcon> {
+  bool _active = false;
+
+  @override
+  void initState() {
+    _active = widget.status;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: IconButton(
+        icon: Icon(
+          _active ? Icons.star : Icons.star_border,
+          size: 40,
+          color: Colors.white,
+        ),
+        onPressed: () {
+          if (!widget.status && !_active) {
+            widget.save();
+            setState(() {
+              _active = true;
+            });
+          }
+          if (widget.status && _active) {
+            widget.remove();
+            setState(() {
+              _active = false;
+            });
+          }
+        },
+      ),
+    );
+  }
 }
