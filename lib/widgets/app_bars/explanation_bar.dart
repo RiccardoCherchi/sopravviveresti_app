@@ -56,15 +56,8 @@ Widget buildExplanationppBar(
         padding: const EdgeInsets.only(left: 10, right: 10, top: 50),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            // IconButton(
-            //   icon: Icon(
-            //     status ? Icons.star : Icons.star_border,
-            //     size: 40,
-            //     color: Colors.white,
-            //   ),
-            //   onPressed: _saveQuestion,
-            // ),
             StarIcon(
               status,
               save: _saveQuestion,
@@ -72,9 +65,12 @@ Widget buildExplanationppBar(
             ),
             Container(
               child: Text(
-                'LOGO',
+                'Sopravviveresti',
+                textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.headline5.copyWith(
-                      fontWeight: FontWeight.bold,
+                      fontFamily: "Anton",
+                      fontSize: 30,
+                      letterSpacing: 1,
                       color: Colors.white,
                     ),
               ),

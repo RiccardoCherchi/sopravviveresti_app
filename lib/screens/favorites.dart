@@ -49,48 +49,50 @@ class _FavoritesState extends State<Favorites> {
             ),
           ),
           Container(
-            height: _size.height * .24,
             decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(50),
                   bottomRight: Radius.circular(50),
                 )),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    IconButton(
-                      iconSize: 30,
-                      icon: Icon(
-                        Icons.arrow_back,
-                        color: Theme.of(context).primaryColor,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 50.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      IconButton(
+                        iconSize: 30,
+                        icon: Icon(
+                          Icons.arrow_back,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        onPressed: () => Navigator.of(context).pop(),
                       ),
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                    Text(
-                      'SOLUZIONI SALVATE',
-                      style: Theme.of(context).textTheme.headline5.copyWith(
-                            color: Theme.of(context).primaryColor,
-                          ),
-                    ),
-                  ],
-                ),
-                Container(
-                  width: _size.width * .8,
-                  margin: const EdgeInsets.only(top: 10, bottom: 20),
-                  child: Text(
-                    "Salva le soluzioni che preferisci per conservarle e consultarle quando vuoi",
-                    // textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 18,
+                      Text(
+                        'SOLUZIONI SALVATE',
+                        style: Theme.of(context).textTheme.headline5.copyWith(
+                              color: Theme.of(context).primaryColor,
+                            ),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    width: _size.width * .8,
+                    margin: const EdgeInsets.only(top: 10, bottom: 20),
+                    child: Text(
+                      "Salva le soluzioni che preferisci per conservarle e consultarle quando vuoi",
+                      // textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 18,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           _loaded

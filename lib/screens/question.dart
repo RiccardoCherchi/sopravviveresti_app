@@ -1,7 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sopravviveresti_app/models/question_type.dart';
-import 'package:sopravviveresti_app/screens/categories.dart';
 import 'package:timer_count_down/timer_controller.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 
@@ -14,12 +15,18 @@ import '../widgets/custom_button.dart';
 
 import '../screens/explanation.dart';
 
-class MyScrollBehavior extends ScrollBehavior {
+class MyAndroidScrollBehavior extends ScrollBehavior {
   @override
   Widget buildViewportChrome(
       BuildContext context, Widget child, AxisDirection axisDirection) {
     return child;
   }
+}
+
+class MyIosScrollBehavior extends ScrollBehavior {
+  @override
+  ScrollPhysics getScrollPhysics(BuildContext context) =>
+      ClampingScrollPhysics();
 }
 
 class Question extends StatefulWidget {
@@ -66,15 +73,18 @@ class _QuestionState extends State<Question> {
             time.toStringAsFixed(0),
             style: TextStyle(
               color: Colors.white,
-              fontSize: 28,
+              fontSize: 35,
               fontWeight: FontWeight.bold,
+              fontFamily: "Anton",
+              letterSpacing: 2.5,
             ),
           ),
           onFinished: _endTIme,
         ),
       ),
       body: ScrollConfiguration(
-        behavior: MyScrollBehavior(),
+        behavior:
+            Platform.isIOS ? MyIosScrollBehavior() : MyAndroidScrollBehavior(),
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -168,13 +178,15 @@ class _QuestionState extends State<Question> {
                             onPressed: () async {
                               final bool status =
                                   await _questions.checkSavedQuestion(
-                                      _questions.activeQuestion.id);
+                                _questions.activeQuestion.id,
+                              );
                               Navigator.of(context).pushReplacementNamed(
-                                  Explanation.routeName,
-                                  arguments: {
-                                    "id": _questions.activeQuestion.id,
-                                    "status": status,
-                                  });
+                                Explanation.routeName,
+                                arguments: {
+                                  "id": _questions.activeQuestion.id,
+                                  "status": status,
+                                },
+                              );
                             },
                           ),
                         ),

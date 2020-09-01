@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -38,7 +40,9 @@ class Explanation extends StatelessWidget {
       body: Container(
         alignment: Alignment.topCenter,
         child: ScrollConfiguration(
-          behavior: MyScrollBehavior(),
+          behavior: Platform.isIOS
+              ? MyIosScrollBehavior()
+              : MyAndroidScrollBehavior(),
           child: SingleChildScrollView(
             child: Column(
               children: [

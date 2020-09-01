@@ -28,7 +28,7 @@ Widget buildGameAppBar(BuildContext context, {@required Countdown countdown}) {
                 shape: BoxShape.circle,
                 border: Border.all(
                   color: Colors.white,
-                  width: 2,
+                  width: 3,
                 ),
               ),
               child: Container(

@@ -32,6 +32,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
             primaryColor: Color(0xff6FCF97),
             accentColor: Colors.yellow,
+            fontFamily: "Montserrat",
             visualDensity: VisualDensity.adaptivePlatformDensity,
             textTheme: TextTheme(
               headline5: Theme.of(context)

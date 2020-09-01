@@ -80,7 +80,7 @@ class Questions with ChangeNotifier {
   }
 
   Future checkSavedQuestion(int id) async {
-    final test = await DB.filterById('user_fav', id);
-    return test != null;
+    final List test = await DB.filterById('user_fav', id);
+    return test.length > 0;
   }
 }

@@ -78,11 +78,12 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                         Text(
                           "GIOCA",
                           textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 30,
-                          ),
+                          style: Theme.of(context).textTheme.headline5.copyWith(
+                                fontFamily: "Anton",
+                                fontSize: 35,
+                                color: Colors.grey[50],
+                                letterSpacing: 2.5,
+                              ),
                         ),
                         Container(
                           margin: EdgeInsets.symmetric(
