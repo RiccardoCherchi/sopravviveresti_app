@@ -90,10 +90,14 @@ class _HomeState extends State<Home> {
                       DrawerFooterElement(
                         "Privacy policy",
                         FontAwesomeIcons.lock,
+                        redirect: () => launch(
+                            "https://howmuchismyoutfit.com/policies/sopravviveresti/policy.html"),
                       ),
                       DrawerFooterElement(
                         "Termini e condizioni",
                         FontAwesomeIcons.questionCircle,
+                        redirect: () => launch(
+                            "https://howmuchismyoutfit.com/policies/sopravviveresti/terms.html"),
                       )
                     ],
                   ),
@@ -208,29 +212,33 @@ class _HomeState extends State<Home> {
 class DrawerFooterElement extends StatelessWidget {
   final String text;
   final IconData icon;
+  final Function redirect;
 
-  DrawerFooterElement(this.text, this.icon);
+  DrawerFooterElement(this.text, this.icon, {@required this.redirect});
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(top: 20),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            text,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
+    return GestureDetector(
+      onTap: redirect,
+      child: Container(
+        margin: const EdgeInsets.only(top: 20),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              text,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+              ),
             ),
-          ),
-          SizedBox(width: 10),
-          Icon(
-            icon,
-            size: 18,
-          ),
-        ],
+            SizedBox(width: 10),
+            Icon(
+              icon,
+              size: 18,
+            ),
+          ],
+        ),
       ),
     );
   }

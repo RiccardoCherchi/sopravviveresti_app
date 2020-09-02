@@ -10,6 +10,7 @@ import '../widgets/app_bars/explanation_bar.dart';
 import '../providers/questions.dart';
 
 import '../screens/question.dart';
+import '../screens/categories.dart';
 
 class Explanation extends StatelessWidget {
   static const routeName = '/explanation';
@@ -62,8 +63,13 @@ class Explanation extends StatelessWidget {
                 CustomButton(
                   "Fine",
                   onPressed: () {
-                    Navigator.of(context)
-                        .pushNamedAndRemoveUntil('/', (route) => false);
+                    _localExplanation != null
+                        ? Navigator.of(context)
+                            .pushNamedAndRemoveUntil('/', (route) => false)
+                        : Navigator.of(context).pushNamedAndRemoveUntil(
+                            CategoriesScreen.routeName,
+                            ModalRoute.withName('/'),
+                          );
                   },
                 ),
                 SizedBox(height: 40),
