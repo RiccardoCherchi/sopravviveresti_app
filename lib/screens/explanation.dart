@@ -51,14 +51,7 @@ class Explanation extends StatelessWidget {
                   _localExplanation == null ? _explanation : _localExplanation,
                 ),
                 SizedBox(height: 20),
-                Container(
-                  width: _size.width * .8,
-                  height: _size.height * .3,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
+                Image.asset('assets/images/solution_image.png', width: _size.width * .7,),
                 SizedBox(height: 20),
                 CustomButton(
                   "Fine",
