@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:timer_count_down/timer_count_down.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 Widget buildGameAppBar(BuildContext context, {@required Countdown countdown}) {
   final _size = MediaQuery.of(context).size;
@@ -16,10 +17,14 @@ Widget buildGameAppBar(BuildContext context, {@required Countdown countdown}) {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Icon(
-              Icons.share,
-              size: 40,
-              color: Colors.white,
+            IconButton(
+              onPressed: () =>
+                  launch("https://www.instagram.com/sopravviveresti/"),
+              icon: Icon(
+                Icons.share,
+                size: 40,
+                color: Colors.white,
+              ),
             ),
             Container(
               padding: const EdgeInsets.all(10),
