@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "705164908603",
+    "firebase_url": "https://sopravviveresti-bfb2c.firebaseio.com",
+    "project_id": "sopravviveresti-bfb2c",
+    "storage_bucket": "sopravviveresti-bfb2c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:705164908603:android:643e0bb239f9df63f3e41e",
+        "android_client_info": {
+          "package_name": "com.hmimo.sopravviveresti"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "705164908603-2nhh34egqtag5lnh4g4hpqp7d4oqodoo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDlnNtTN0bA6Fb28AwUUdfh4E9TgqrSmb8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "705164908603-2nhh34egqtag5lnh4g4hpqp7d4oqodoo.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "705164908603-6ge17e9lfj7os4nniuobi7fpf3lpvc2m.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.hmimo.sopravviveresti",
+                "app_store_id": "1529738913"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
