@@ -16,7 +16,7 @@ class Ads {
 
   InterstitialAd createInterstitialAd() {
     return InterstitialAd(
-      adUnitId: InterstitialAd.testAdUnitId,
+      adUnitId: getSopravviverestiInterstitialId(),
       listener: (MobileAdEvent event) {
         print("InterstitialAd event $event");
       },
