@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <key>CLIENT_ID</key>
+        <string>705164908603-6ge17e9lfj7os4nniuobi7fpf3lpvc2m.apps.googleusercontent.com</string>
+        <key>REVERSED_CLIENT_ID</key>
+        <string>com.googleusercontent.apps.705164908603-6ge17e9lfj7os4nniuobi7fpf3lpvc2m</string>
+        <key>API_KEY</key>
+        <string>AIzaSyAhVvgTIG7Gb7NqL3DQshEnyWntpCKXm3Q</string>
+        <key>GCM_SENDER_ID</key>
+        <string>705164908603</string>
+        <key>PLIST_VERSION</key>
+        <string>1</string>
+        <key>BUNDLE_ID</key>
+        <string>com.hmimo.sopravviveresti</string>
+        <key>PROJECT_ID</key>
+        <string>sopravviveresti-bfb2c</string>
+        <key>STORAGE_BUCKET</key>
+        <string>sopravviveresti-bfb2c.appspot.com</string>
+        <key>IS_ADS_ENABLED</key>
+        <false></false>
+        <key>IS_ANALYTICS_ENABLED</key>
+        <false></false>
+        <key>IS_APPINVITE_ENABLED</key>
+        <true></true>
+        <key>IS_GCM_ENABLED</key>
+        <true></true>
+        <key>IS_SIGNIN_ENABLED</key>
+        <true></true>
+        <key>GOOGLE_APP_ID</key>
+        <string>1:705164908603:ios:0b8a7d34af911852f3e41e</string>
+        <key>DATABASE_URL</key>
+        <string>https://sopravviveresti-bfb2c.firebaseio.com</string>
+    </dict>
+</plist>
