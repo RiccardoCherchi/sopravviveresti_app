@@ -137,11 +137,12 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                 SizedBox(
                                   height: _size.height * .05,
                                 ),
-                                Container(
-                                  child: SvgPicture.asset(
-                                    'assets/images/categories.svg',
+                                if (_size.height > 660)
+                                  Container(
+                                    child: SvgPicture.asset(
+                                      'assets/images/categories.svg',
+                                    ),
                                   ),
-                                ),
                                 SizedBox(
                                   height: _size.height * .05,
                                 ),
