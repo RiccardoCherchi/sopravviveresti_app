@@ -101,7 +101,7 @@ class _FavoritesState extends State<Favorites> {
                       child: Container(
                           width: _size.width * .8,
                           margin: EdgeInsets.only(
-                            top: _size.height * .25,
+                            top: _size.height * .28,
                           ),
                           child: ListView.builder(
                             physics: BouncingScrollPhysics(),

@@ -33,6 +33,19 @@ class Explanation extends StatelessWidget {
 
     final _size = MediaQuery.of(context).size;
 
+    void _end() async {
+      if (_localExplanation != null) {
+        Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
+      } else {
+        await Provider.of<Questions>(context, listen: false)
+            .getNewQuestionWithLastCategory();
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          Question.routeName,
+          ModalRoute.withName(CategoriesScreen.routeName),
+        );
+      }
+    }
+
     return Scaffold(
       key: _scaffoldKey,
       appBar: buildExplanationppBar(context,
@@ -51,19 +64,14 @@ class Explanation extends StatelessWidget {
                   _localExplanation == null ? _explanation : _localExplanation,
                 ),
                 SizedBox(height: 20),
-                Image.asset('assets/images/solution_image.png', width: _size.width * .7,),
+                Image.asset(
+                  'assets/images/solution_image.png',
+                  width: _size.width * .7,
+                ),
                 SizedBox(height: 20),
                 CustomButton(
-                  "Fine",
-                  onPressed: () {
-                    _localExplanation != null
-                        ? Navigator.of(context)
-                            .pushNamedAndRemoveUntil('/', (route) => false)
-                        : Navigator.of(context).pushNamedAndRemoveUntil(
-                            CategoriesScreen.routeName,
-                            ModalRoute.withName('/'),
-                          );
-                  },
+                  _localExplanation != null ? "Fine" : "Prossima domanda",
+                  onPressed: () => _end(),
                 ),
                 SizedBox(height: 40),
               ],

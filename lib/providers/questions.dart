@@ -24,16 +24,47 @@ class QuestionData {
 class Questions with ChangeNotifier {
   QuestionData _activeQuestion;
 
+  int _lasCategoryId;
+
+  int get lastCategoryId {
+    return _lasCategoryId;
+  }
+
   QuestionData get activeQuestion {
     return _activeQuestion;
   }
 
   Future getNewQuestion([int categoryId]) async {
+    if (categoryId != null) {
+      _lasCategoryId = categoryId;
+    }
     final response = await http.get(
       categoryId != null
           ? "http://68.183.71.76:8000/question?category=$categoryId"
           : "http://68.183.71.76:8000/question",
     );
+    final data = json.decode(utf8.decode(response.bodyBytes));
+    _activeQuestion = QuestionData(
+      id: data['id'],
+      situation: data['situation'],
+      explanation: data['explanation'],
+      answers: [
+        {
+          "content": data['correct_answer'],
+          "type": QuestionType.correct,
+        },
+        {
+          "content": data['wrong_answer'],
+          "type": QuestionType.wrong,
+        }
+      ]..shuffle(),
+    );
+    notifyListeners();
+  }
+
+  Future getNewQuestionWithLastCategory() async {
+    final response = await http
+        .get("http://68.183.71.76:8000/question?category=$lastCategoryId");
     final data = json.decode(utf8.decode(response.bodyBytes));
     _activeQuestion = QuestionData(
       id: data['id'],

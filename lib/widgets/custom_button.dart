@@ -18,7 +18,7 @@ class CustomButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 40,
-      width: MediaQuery.of(context).size.width * .6,
+      width: MediaQuery.of(context).size.width * .65,
       child: RaisedButton(
         onPressed: disable == true ? null : onPressed,
         disabledColor: Colors.black38.withOpacity(.2),
