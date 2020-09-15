@@ -2,11 +2,14 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import 'package:firebase_admob/firebase_admob.dart';
 import 'package:timer_count_down/timer_controller.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 
+import '../helpers/ads.dart';
+
 import '../providers/questions.dart';
+import '../providers/show_ads.dart';
 
 import '../widgets/app_bars/game_app_bar.dart';
 import '../widgets/question_solution.dart';
@@ -55,6 +58,7 @@ class _QuestionState extends State<Question> {
         : false;
 
     final _questions = Provider.of<Questions>(context, listen: false);
+    final _showAds = Provider.of<ShowAds>(context, listen: false);
 
     void _resolve(Map question) {
       if (!_active) {
@@ -197,6 +201,19 @@ class _QuestionState extends State<Question> {
                                     : "Soluzione",
                             onPressed: () async {
                               if (_isGeneralQuestion) {
+                                final ads = Ads();
+                                InterstitialAd interstitialAd =
+                                    ads.createInterstitialAd();
+
+                                if (_showAds.count == 3) {
+                                  interstitialAd
+                                    ..load()
+                                    ..show();
+                                }
+
+                                _showAds.increseCounter();
+                                print(_showAds.count);
+
                                 await _questions.getNewQuestion(
                                     isGeneralCuluture: true);
                                 Navigator.of(context).pushNamedAndRemoveUntil(

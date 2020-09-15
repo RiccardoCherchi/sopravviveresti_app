@@ -7,12 +7,16 @@ class ShowAds with ChangeNotifier {
     return _count;
   }
 
+  final bool _isAdsEnable = true;
+
   void increseCounter() {
-    if (_count <= 2) {
-      _count++;
-    } else {
-      _count = 0;
+    if (_isAdsEnable) {
+      if (_count <= 2) {
+        _count++;
+      } else {
+        _count = 0;
+      }
+      notifyListeners();
     }
-    notifyListeners();
   }
 }

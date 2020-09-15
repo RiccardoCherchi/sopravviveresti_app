@@ -1,9 +1,14 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_admob/firebase_admob.dart';
+
+import '../helpers/ads.dart';
 
 import '../providers/categories.dart';
 import '../providers/questions.dart';
+import '../providers/show_ads.dart';
 
 import '../screens/categories.dart';
 import '../screens/question.dart';
@@ -18,6 +23,19 @@ class ChooseGame extends StatelessWidget {
     final _scaffoldKey = GlobalKey<ScaffoldState>();
     final _categories = Provider.of<Categories>(context, listen: false);
     final _questions = Provider.of<Questions>(context, listen: false);
+    final _showAds = Provider.of<ShowAds>(context, listen: false);
+
+    final ads = Ads();
+    InterstitialAd interstitialAd = ads.createInterstitialAd();
+
+    void _checkOpenAd() {
+      print(_showAds.count);
+      if (_showAds.count == 3) {
+        interstitialAd
+          ..load()
+          ..show();
+      }
+    }
 
     void showSocketError() async {
       _scaffoldKey.currentState.showSnackBar(
@@ -45,6 +63,8 @@ class ChooseGame extends StatelessWidget {
     void _openClassic() async {
       try {
         await _categories.getCateogires();
+        _showAds.increseCounter();
+        _checkOpenAd();
         Navigator.of(context).pushNamed(CategoriesScreen.routeName);
       } on SocketException catch (_) {
         showSocketError();
@@ -54,6 +74,8 @@ class ChooseGame extends StatelessWidget {
     void _openGeneralCulture() async {
       try {
         await _questions.getNewQuestion(isGeneralCuluture: true);
+        _showAds.increseCounter();
+        _checkOpenAd();
         Navigator.of(context).pushNamed(Question.routeName, arguments: {
           "isGeneralCultureQuestion": true,
         });
@@ -94,7 +116,6 @@ class ChooseGame extends StatelessWidget {
               children: [
                 Container(
                   width: double.infinity,
-                  height: size.maxHeight * .21,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(
@@ -124,7 +145,8 @@ class ChooseGame extends StatelessWidget {
                           style: TextStyle(fontSize: 18),
                           textAlign: TextAlign.center,
                         ),
-                      )
+                      ),
+                      SizedBox(height: 10),
                     ],
                   ),
                 ),

@@ -49,6 +49,7 @@ class _FavoritesState extends State<Favorites> {
             ),
           ),
           Container(
+            width: double.infinity,
             decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
@@ -61,24 +62,12 @@ class _FavoritesState extends State<Favorites> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      IconButton(
-                        iconSize: 30,
-                        icon: Icon(
-                          Icons.arrow_back,
+                  Text(
+                    'SOLUZIONI SALVATE',
+                    style: Theme.of(context).textTheme.headline5.copyWith(
                           color: Theme.of(context).primaryColor,
+                          fontSize: 25,
                         ),
-                        onPressed: () => Navigator.of(context).pop(),
-                      ),
-                      Text(
-                        'SOLUZIONI SALVATE',
-                        style: Theme.of(context).textTheme.headline5.copyWith(
-                              color: Theme.of(context).primaryColor,
-                            ),
-                      ),
-                    ],
                   ),
                   Container(
                     width: _size.width * .8,
@@ -89,6 +78,7 @@ class _FavoritesState extends State<Favorites> {
                       style: TextStyle(
                         fontSize: 18,
                       ),
+                      textAlign: TextAlign.center,
                     ),
                   ),
                 ],
