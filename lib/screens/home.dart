@@ -4,15 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
 import '../styles/sopravviveresti_icons.dart';
-import 'package:provider/provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../providers/categories.dart';
-
 import '../widgets/home_button.dart';
 
-import '../screens/categories.dart';
+import '../screens/game_choose.dart';
 import '../screens/favorites.dart';
 
 class Home extends StatefulWidget {
@@ -37,8 +34,6 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     final _scaffoldKey = GlobalKey<ScaffoldState>();
-
-    final _cateories = Provider.of<Categories>(context);
     final _size = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -124,33 +119,8 @@ class _HomeState extends State<Home> {
                 HomeButton(
                   text: 'Gioca',
                   icon: Sopravviveresti.thunder,
-                  onPressed: () async {
-                    try {
-                      await _cateories.getCateogires();
-                      Navigator.of(context)
-                          .pushNamed(CategoriesScreen.routeName);
-                    } on SocketException catch (e) {
-                      _scaffoldKey.currentState.showSnackBar(
-                        SnackBar(
-                          backgroundColor: Theme.of(context).primaryColor,
-                          content: Row(
-                            children: [
-                              Icon(Icons.signal_wifi_off),
-                              SizedBox(width: 10),
-                              Container(
-                                child: Text(
-                                  "Connessione fallita",
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      );
-                    }
+                  onPressed: () {
+                    Navigator.of(context).pushNamed(ChooseGame.routeName);
                   },
                 ),
                 HomeButton(

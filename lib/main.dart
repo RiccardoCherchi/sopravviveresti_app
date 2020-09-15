@@ -10,6 +10,7 @@ import './screens/categories.dart';
 import './screens/question.dart';
 import './screens/explanation.dart';
 import './screens/favorites.dart';
+import './screens/game_choose.dart';
 
 import './providers/questions.dart';
 import './providers/categories.dart';
@@ -57,6 +58,7 @@ class MyApp extends StatelessWidget {
           Question.routeName: (_) => Question(),
           Explanation.routeName: (_) => Explanation(),
           Favorites.routeName: (_) => Favorites(),
+          ChooseGame.routeName: (_) => ChooseGame(),
         },
       ),
     );

@@ -1,6 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:timer_count_down/timer_count_down.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:esys_flutter_share/esys_flutter_share.dart';
 
 Widget buildGameAppBar(BuildContext context, {@required Countdown countdown}) {
   final _size = MediaQuery.of(context).size;
@@ -18,8 +20,10 @@ Widget buildGameAppBar(BuildContext context, {@required Countdown countdown}) {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             IconButton(
-              onPressed: () =>
-                  launch("https://www.instagram.com/sopravviveresti/"),
+              onPressed: () => Share.text(
+                  'Sopravviveresti?',
+                  'Sei in una situazione di pericolo e hai due opzioni per salvarti: quale delle due sarà la tua salvezza? \n${Platform.isIOS ? 'https://apps.apple.com/us/app/id1529738913' : 'https://play.google.com/store/apps/details?id=com.hmimo.sopravviveresti'}',
+                  'text/plain'),
               icon: Icon(
                 Icons.share,
                 size: 40,

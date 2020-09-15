@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sopravviveresti_app/models/question_type.dart';
+
 import 'package:timer_count_down/timer_controller.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 
@@ -13,7 +13,10 @@ import '../widgets/question_solution.dart';
 import '../widgets/answer.dart';
 import '../widgets/custom_button.dart';
 
+import '../models/question_type.dart';
+
 import '../screens/explanation.dart';
+import '../screens/game_choose.dart';
 
 class MyAndroidScrollBehavior extends ScrollBehavior {
   @override
@@ -44,6 +47,13 @@ class _QuestionState extends State<Question> {
 
   @override
   Widget build(BuildContext context) {
+    final Map _routeArguments =
+        ModalRoute.of(context).settings.arguments as Map;
+
+    final bool _isGeneralQuestion = _routeArguments != null
+        ? _routeArguments['isGeneralCultureQuestion']
+        : false;
+
     final _questions = Provider.of<Questions>(context, listen: false);
 
     void _resolve(Map question) {
@@ -114,13 +124,20 @@ class _QuestionState extends State<Question> {
                                       const EdgeInsets.symmetric(vertical: 15),
                                   child: GestureDetector(
                                     onTap: () => _resolve(e),
-                                    child: Answer(
-                                      active: _active,
-                                      choosed: _questions.activeQuestion.answers
-                                              .indexOf(e) ==
-                                          _choosed,
-                                      content: e['content'],
-                                      questionType: e['type'],
+                                    child: ExplanationContainer(
+                                      Answer(
+                                        active: _active,
+                                        choosed: _questions
+                                                .activeQuestion.answers
+                                                .indexOf(e) ==
+                                            _choosed,
+                                        content: e['content'],
+                                        questionType: e['type'],
+                                      ),
+                                      active: _active &&
+                                          e['type'] == QuestionType.correct,
+                                      explanation:
+                                          _questions.activeQuestion.explanation,
                                     ),
                                   ),
                                 ),
@@ -173,20 +190,34 @@ class _QuestionState extends State<Question> {
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 30.0),
                           child: CustomButton(
-                            _choosed != null ? "Scopri perchè" : "Soluzione",
-                            icon: Icons.arrow_forward,
+                            _isGeneralQuestion
+                                ? "Prossima domanda"
+                                : _choosed != null
+                                    ? "Scopri perchè"
+                                    : "Soluzione",
                             onPressed: () async {
-                              final bool status =
-                                  await _questions.checkSavedQuestion(
-                                _questions.activeQuestion.id,
-                              );
-                              Navigator.of(context).pushReplacementNamed(
-                                Explanation.routeName,
-                                arguments: {
-                                  "id": _questions.activeQuestion.id,
-                                  "status": status,
-                                },
-                              );
+                              if (_isGeneralQuestion) {
+                                await _questions.getNewQuestion(
+                                    isGeneralCuluture: true);
+                                Navigator.of(context).pushNamedAndRemoveUntil(
+                                    Question.routeName,
+                                    ModalRoute.withName(ChooseGame.routeName),
+                                    arguments: {
+                                      "isGeneralCultureQuestion": true,
+                                    });
+                              } else {
+                                final bool status =
+                                    await _questions.checkSavedQuestion(
+                                  _questions.activeQuestion.id,
+                                );
+                                Navigator.of(context).pushReplacementNamed(
+                                  Explanation.routeName,
+                                  arguments: {
+                                    "id": _questions.activeQuestion.id,
+                                    "status": status,
+                                  },
+                                );
+                              }
                             },
                           ),
                         ),
@@ -197,6 +228,114 @@ class _QuestionState extends State<Question> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class ExplanationContainer extends StatelessWidget {
+  final Answer answer;
+  final bool active;
+  final String explanation;
+
+  ExplanationContainer(this.answer,
+      {@required this.active, @required this.explanation});
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 70,
+      child: Stack(
+        children: [
+          Center(child: answer),
+          if (active)
+            Positioned(
+              top: -10,
+              right: 20,
+              child: Container(
+                child: IconButton(
+                  icon: Icon(
+                    Icons.help,
+                    size: 30,
+                  ),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (_) => Dialog(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          backgroundColor: Colors.white,
+                          child: Stack(
+                            children: [
+                              Container(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                        top: 15.0,
+                                        bottom: 10.0,
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          "Spiegazione",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline5
+                                              .copyWith(
+                                                letterSpacing: 1.5,
+                                              ),
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 30,
+                                        vertical: 20,
+                                      ),
+                                      child: Text(
+                                        explanation,
+                                        style: TextStyle(fontSize: 18),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Positioned(
+                                top: 10,
+                                right: 10,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context).primaryColor,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: SizedBox(
+                                    height: 30,
+                                    width: 30,
+                                    child: IconButton(
+                                      splashColor: Colors.transparent,
+                                      highlightColor: Colors.transparent,
+                                      padding: new EdgeInsets.all(0.0),
+                                      icon: Icon(
+                                        Icons.close,
+                                        color: Colors.white,
+                                        size: 25,
+                                      ),
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(),
+                                    ),
+                                  ),
+                                ),
+                              )
+                            ],
+                          )),
+                    );
+                  },
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }

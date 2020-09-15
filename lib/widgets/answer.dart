@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:sopravviveresti_app/models/question_type.dart';
 
@@ -7,34 +9,20 @@ class Answer extends StatelessWidget {
   final bool active;
   final bool choosed;
 
+  final String explanation;
+
   Answer({
     @required this.content,
     @required this.questionType,
     @required this.active,
     @required this.choosed,
+    this.explanation,
   });
   @override
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width * .8,
       height: 50,
-      // child: RaisedButton(
-      //   onPressed: () {},
-      //   disabledColor: Colors.white,
-      //   disabledTextColor: Colors.black,
-      //   hoverColor: Colors.transparent,
-      //   focusColor: Colors.transparent,
-      //   highlightColor: Colors.transparent,
-      //   color: Colors.white,
-      //   shape: RoundedRectangleBorder(
-      //     borderRadius: BorderRadius.circular(10),
-      //     side: BorderSide(
-      //       color: _getColor(context, questionType),
-      //       width: 2,
-      //     ),
-      //   ),
-      //   child:
-      // ),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),

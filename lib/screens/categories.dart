@@ -36,7 +36,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
     InterstitialAd interstitialAd = ads.createInterstitialAd();
 
     void _loadQuestion([int categoryId]) async {
-      await _questions.getNewQuestion(categoryId);
+      await _questions.getNewQuestion(categoryId: categoryId);
       if (_showAds.count == 3) {
         interstitialAd
           ..load()
