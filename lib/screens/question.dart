@@ -139,7 +139,8 @@ class _QuestionState extends State<Question> {
                                         questionType: e['type'],
                                       ),
                                       active: _active &&
-                                          e['type'] == QuestionType.correct,
+                                          e['type'] == QuestionType.correct &&
+                                          _isGeneralQuestion,
                                       explanation:
                                           _questions.activeQuestion.explanation,
                                     ),
