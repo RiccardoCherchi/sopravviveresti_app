@@ -3,11 +3,15 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
-import '../styles/sopravviveresti_icons.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../styles/sopravviveresti_icons.dart';
+
+import '../helpers/check_version.dart';
+
 import '../widgets/home_button.dart';
+import '../widgets/custom_button.dart';
 
 import '../screens/game_choose.dart';
 import '../screens/favorites.dart';
@@ -29,6 +33,83 @@ class _HomeState extends State<Home> {
         ExactAssetPicture(
             SvgPicture.svgStringDecoder, 'assets/images/routePath.svg'),
         null);
+  }
+
+  bool _versionStatus = true;
+
+  @override
+  void initState() {
+    _checkVersion();
+    super.initState();
+  }
+
+  void _checkVersion() async {
+    final status = await checkAppVersion();
+    print("version status: $status");
+    setState(() {
+      _versionStatus = status;
+    });
+    if (!status) {
+      _showVersionDialog();
+    }
+  }
+
+  Future _showVersionDialog() {
+    return showDialog(
+      context: context,
+      builder: (_) => Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30),
+        ),
+        child: Container(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: SvgPicture.asset(
+                  'assets/images/update_icon.svg',
+                  width: 60,
+                ),
+              ),
+              Text(
+                "Aggiorna l’app per utilizzarla",
+                style: Theme.of(context).textTheme.headline5,
+                textAlign: TextAlign.center,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: Text(
+                  "Abbiamo fatto dei lavori di ristrutturazione, e per continuare ad utilizzare l’app è necessario aggiornarla",
+                  style: TextStyle(fontSize: 18),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              SizedBox(
+                width: 150,
+                child: CustomButton(
+                  "Aggiorna",
+                  color: Theme.of(context).primaryColor,
+                  textStyle: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  borderWidth: 4,
+                  onPressed: () {
+                    launch(
+                      Platform.isIOS
+                          ? "https://apps.apple.com/app/id1529738913"
+                          : "https://play.google.com/store/apps/details?id=com.hmimo.sopravviveresti",
+                    );
+                  },
+                ),
+              ),
+              SizedBox(height: 20),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -120,14 +201,22 @@ class _HomeState extends State<Home> {
                   text: 'Gioca',
                   icon: Sopravviveresti.thunder,
                   onPressed: () {
-                    Navigator.of(context).pushNamed(ChooseGame.routeName);
+                    if (_versionStatus) {
+                      Navigator.of(context).pushNamed(ChooseGame.routeName);
+                    } else {
+                      _showVersionDialog();
+                    }
                   },
                 ),
                 HomeButton(
                   text: 'Preferiti',
                   icon: Icons.star,
                   onPressed: () {
-                    Navigator.of(context).pushNamed(Favorites.routeName);
+                    if (_versionStatus) {
+                      Navigator.of(context).pushNamed(Favorites.routeName);
+                    } else {
+                      _showVersionDialog();
+                    }
                   },
                 )
               ],

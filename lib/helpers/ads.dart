@@ -1,22 +1,26 @@
 import 'dart:io';
 import 'package:firebase_admob/firebase_admob.dart';
 
+const bool isAdsEnable = true;
+
 String getAppId() {
   return Platform.isIOS
-      ? "ca-app-pub-2044040104930184~5731156528"
-      : "ca-app-pub-2044040104930184~9321248870";
+      ? "ca-app-pub-6180833306474768~7857468863"
+      : "ca-app-pub-6180833306474768~7530165807";
 }
 
 class Ads {
   String getSopravviverestiInterstitialId() {
     return Platform.isIOS
-        ? "ca-app-pub-2044040104930184/8928165502"
-        : "ca-app-pub-2044040104930184/4605777118";
+        ? "ca-app-pub-6180833306474768/2470438483"
+        : "ca-app-pub-6180833306474768/8460104099";
   }
 
   InterstitialAd createInterstitialAd() {
     return InterstitialAd(
-      adUnitId: getSopravviverestiInterstitialId(),
+      adUnitId: isAdsEnable
+          ? getSopravviverestiInterstitialId()
+          : InterstitialAd.testAdUnitId,
       // adUnitId: InterstitialAd.testAdUnitId,
       listener: (MobileAdEvent event) {
         print("InterstitialAd event $event");

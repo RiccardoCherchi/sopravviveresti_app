@@ -38,6 +38,7 @@ dependencies:
   url_launcher: ^5.5.0
   firebase_admob: ^0.9.3+4
   esys_flutter_share: ^1.0.2
+  package_info: ^0.4.3
   
 
 
@@ -71,6 +72,7 @@ flutter:
     - assets/images/routePath.svg
     - assets/images/earth_draw.svg
     - assets/images/fire_draw.svg
+    - assets/images/update_icon.svg
     - assets/images/solution_image.png
     
   # An image asset can refer to one or more resolution-specific "variants", see

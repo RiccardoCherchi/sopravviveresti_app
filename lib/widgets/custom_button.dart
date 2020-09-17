@@ -6,6 +6,8 @@ class CustomButton extends StatelessWidget {
   final IconData icon;
   final Color color;
   final bool disable;
+  final double borderWidth;
+  final TextStyle textStyle;
 
   CustomButton(
     this.content, {
@@ -13,6 +15,8 @@ class CustomButton extends StatelessWidget {
     this.icon,
     this.color,
     this.disable,
+    this.borderWidth = 2,
+    this.textStyle = const TextStyle(fontWeight: FontWeight.w500, fontSize: 20),
   });
   @override
   Widget build(BuildContext context) {
@@ -31,7 +35,7 @@ class CustomButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
           side: BorderSide(
             color: color != null ? color : Theme.of(context).accentColor,
-            width: 2,
+            width: borderWidth,
           ),
         ),
         child: Row(
@@ -39,7 +43,7 @@ class CustomButton extends StatelessWidget {
           children: [
             Text(
               content,
-              style: TextStyle(fontWeight: FontWeight.w500, fontSize: 20),
+              style: textStyle,
             ),
             if (icon != null)
               Container(

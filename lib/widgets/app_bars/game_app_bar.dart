@@ -22,7 +22,7 @@ Widget buildGameAppBar(BuildContext context, {@required Countdown countdown}) {
             IconButton(
               onPressed: () => Share.text(
                   'Sopravviveresti?',
-                  'Sei in una situazione di pericolo e hai due opzioni per salvarti: quale delle due sarà la tua salvezza? \n${Platform.isIOS ? 'https://apps.apple.com/us/app/id1529738913' : 'https://play.google.com/store/apps/details?id=com.hmimo.sopravviveresti'}',
+                  'Sei in una situazione di pericolo e hai due opzioni per salvarti: quale delle due sarà la tua salvezza? \n${Platform.isIOS ? 'https://apps.apple.com/app/id1529738913' : 'https://play.google.com/store/apps/details?id=com.hmimo.sopravviveresti'}',
                   'text/plain'),
               icon: Icon(
                 Icons.share,

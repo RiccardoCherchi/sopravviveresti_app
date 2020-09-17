@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 
+import '../helpers/ads.dart';
+
 class ShowAds with ChangeNotifier {
   int _count = 0;
 
@@ -7,10 +9,8 @@ class ShowAds with ChangeNotifier {
     return _count;
   }
 
-  final bool _isAdsEnable = true;
-
   void increseCounter() {
-    if (_isAdsEnable) {
+    if (isAdsEnable) {
       if (_count <= 2) {
         _count++;
       } else {
