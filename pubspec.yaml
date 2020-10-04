@@ -72,6 +72,7 @@ flutter:
     - assets/images/routePath.svg
     - assets/images/earth_draw.svg
     - assets/images/fire_draw.svg
+    - assets/images/mountain_draw.svg
     - assets/images/update_icon.svg
     - assets/images/solution_image.png
     

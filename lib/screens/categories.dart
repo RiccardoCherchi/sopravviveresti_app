@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
-import '../helpers/ads.dart';
+import 'package:sopravviveresti_app/models/game_type.dart';
 
 import '../providers/categories.dart';
 import '../providers/questions.dart';
-import '../providers/show_ads.dart';
 
 import '../widgets/custom_button.dart';
+
+import '../models/game_type.dart';
 
 import './question.dart';
 
@@ -28,21 +28,14 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   Widget build(BuildContext context) {
     final _questions = Provider.of<Questions>(context, listen: false);
     final _categories = Provider.of<Categories>(context, listen: false);
-    final _showAds = Provider.of<ShowAds>(context);
 
     final _size = MediaQuery.of(context).size;
 
-    final ads = Ads();
-    InterstitialAd interstitialAd = ads.createInterstitialAd();
-
     void _loadQuestion([int categoryId]) async {
-      await _questions.getNewQuestion(categoryId: categoryId);
-      if (_showAds.count == 3) {
-        interstitialAd
-          ..load()
-          ..show();
-      }
-      _showAds.increseCounter();
+      await _questions.getNewQuestion(
+        categoryId: categoryId,
+        gameType: GameType.classic,
+      );
       Navigator.of(context).pushNamed(Question.routeName);
     }
 
@@ -178,7 +171,7 @@ class CategoryModal extends StatelessWidget {
     final _categories = Provider.of<Categories>(context, listen: false);
 
     void _chooseCategory({int categoryId, bool random = false}) {
-      Navigator.of(context).pop(random == true ? random : categoryId);
+      Navigator.of(context).pop(random ? random : categoryId);
     }
 
     return CustomPaint(

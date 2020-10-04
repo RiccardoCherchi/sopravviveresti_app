@@ -6,12 +6,16 @@ import 'package:http/http.dart' as http;
 class Category {
   final int id;
   final String name;
+  final bool isPremium;
+  final String imageUrl;
 
-  Category(this.id, this.name);
+  Category(this.id, this.name, this.isPremium, this.imageUrl);
 
   Category.fromJson(Map<String, dynamic> json)
       : id = json['id'],
-        name = json['name'];
+        name = json['name'],
+        isPremium = json['is_premium'],
+        imageUrl = json['image'];
 }
 
 class Categories with ChangeNotifier {
@@ -21,9 +25,13 @@ class Categories with ChangeNotifier {
     return _categories;
   }
 
-  Future getCateogires() async {
+  Future getCategoires({bool isQuiz}) async {
     try {
-      final response = await http.get("http://68.183.71.76:8000/categories");
+      String url = isQuiz
+          ? "http://68.183.71.76:8000/quiz"
+          : "http://68.183.71.76:8000/categories";
+
+      final response = await http.get(url);
       final data = json.decode(utf8.decode(response.bodyBytes));
       List<Category> _loadedCateogires = [];
       data.forEach((e) {

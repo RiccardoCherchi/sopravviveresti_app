@@ -2,16 +2,15 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_admob/firebase_admob.dart';
 
-import '../helpers/ads.dart';
+import '../models/game_type.dart';
 
 import '../providers/categories.dart';
 import '../providers/questions.dart';
-import '../providers/show_ads.dart';
 
 import '../screens/categories.dart';
 import '../screens/question.dart';
+import '../screens/quizzes.dart';
 
 import '../widgets/game_card.dart';
 
@@ -23,19 +22,6 @@ class ChooseGame extends StatelessWidget {
     final _scaffoldKey = GlobalKey<ScaffoldState>();
     final _categories = Provider.of<Categories>(context, listen: false);
     final _questions = Provider.of<Questions>(context, listen: false);
-    final _showAds = Provider.of<ShowAds>(context, listen: false);
-
-    final ads = Ads();
-    InterstitialAd interstitialAd = ads.createInterstitialAd();
-
-    void _checkOpenAd() {
-      print(_showAds.count);
-      if (_showAds.count == 3) {
-        interstitialAd
-          ..load()
-          ..show();
-      }
-    }
 
     void showSocketError() async {
       _scaffoldKey.currentState.showSnackBar(
@@ -62,9 +48,7 @@ class ChooseGame extends StatelessWidget {
 
     void _openClassic() async {
       try {
-        await _categories.getCateogires();
-        _showAds.increseCounter();
-        _checkOpenAd();
+        await _categories.getCategoires();
         Navigator.of(context).pushNamed(CategoriesScreen.routeName);
       } on SocketException catch (_) {
         showSocketError();
@@ -73,12 +57,20 @@ class ChooseGame extends StatelessWidget {
 
     void _openGeneralCulture() async {
       try {
-        await _questions.getNewQuestion(isGeneralCuluture: true);
-        _showAds.increseCounter();
-        _checkOpenAd();
+        await _questions.getNewQuestion(gameType: GameType.general_question);
         Navigator.of(context).pushNamed(Question.routeName, arguments: {
           "isGeneralCultureQuestion": true,
+          "isQuizQuestion": false,
         });
+      } on SocketException catch (_) {
+        showSocketError();
+      }
+    }
+
+    void _openQuiz() async {
+      try {
+        await _categories.getCategoires(isQuiz: true);
+        Navigator.of(context).pushNamed(Quizzes.routeName);
       } on SocketException catch (_) {
         showSocketError();
       }
@@ -86,21 +78,6 @@ class ChooseGame extends StatelessWidget {
 
     return Scaffold(
       key: _scaffoldKey,
-      // appBar: AppBar(),
-      // body: Container(
-      //   child: Column(
-      //     children: [
-      //       GestureDetector(
-      //         child: Text('classico'),
-      //         onTap: openClassic,
-      //       ),
-      //       GestureDetector(
-      //         onTap: _openGeneralCulture,
-      //         child: Text('domanda cultura generale'),
-      //       ),
-      //     ],
-      //   ),
-      // ),
       body: Stack(
         children: [
           Container(
@@ -172,6 +149,14 @@ class ChooseGame extends StatelessWidget {
                           width: size.maxWidth * .8,
                           imagePath: "assets/images/earth_draw.svg",
                           onPressed: _openGeneralCulture,
+                        ),
+                        GameCard(
+                          title: "Modalità domande multiple",
+                          content:
+                              "Un corso di sopravvivenza a domande, sopravviverai?",
+                          width: size.maxWidth * .8,
+                          imagePath: "assets/images/mountain_draw.svg",
+                          onPressed: _openQuiz,
                         ),
                       ],
                     ),

@@ -2,14 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_admob/firebase_admob.dart';
+import 'package:sopravviveresti_app/providers/hearts.dart';
 import 'package:timer_count_down/timer_controller.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 
-import '../helpers/ads.dart';
-
 import '../providers/questions.dart';
-import '../providers/show_ads.dart';
 
 import '../widgets/app_bars/game_app_bar.dart';
 import '../widgets/question_solution.dart';
@@ -17,6 +14,7 @@ import '../widgets/answer.dart';
 import '../widgets/custom_button.dart';
 
 import '../models/question_type.dart';
+import '../models/game_type.dart';
 
 import '../screens/explanation.dart';
 import '../screens/game_choose.dart';
@@ -50,36 +48,142 @@ class _QuestionState extends State<Question> {
 
   @override
   Widget build(BuildContext context) {
+    bool _isGeneralQuestion = false;
+    bool _isQuizQuestion = false;
+
     final Map _routeArguments =
         ModalRoute.of(context).settings.arguments as Map;
 
-    final bool _isGeneralQuestion = _routeArguments != null
+    _isGeneralQuestion = _routeArguments != null
         ? _routeArguments['isGeneralCultureQuestion']
         : false;
 
-    final _questions = Provider.of<Questions>(context, listen: false);
-    final _showAds = Provider.of<ShowAds>(context, listen: false);
+    _isQuizQuestion =
+        _routeArguments != null ? _routeArguments['isQuizQuestion'] : false;
 
-    void _resolve(Map question) {
-      if (!_active) {
-        setState(() {
-          _controller.pause();
-          _active = true;
-          _choosed = _questions.activeQuestion.answers.indexOf(question);
-        });
+    final _questions = Provider.of<Questions>(context);
+    final _hearts = Provider.of<Hearts>(context);
+
+    bool _checkQuestion(int choosed) {
+      return _questions.activeQuestion.answers[_choosed]['type'] ==
+          QuestionType.correct;
+    }
+
+    String _printDuration(Duration duration) {
+      String twoDigits(int n) => n.toString().padLeft(2, "0");
+      String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+      String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+      return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
+    }
+
+    void _openEndHearts() async {
+      final Duration timeLeft = await _hearts.getTimeLeftForGeneration();
+
+      showDialog(
+        context: context,
+        builder: (_) => Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            backgroundColor: Colors.white,
+            child: Container(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      top: 15.0,
+                      bottom: 10.0,
+                    ),
+                    child: Center(
+                      child: Text(
+                        "Cuori terminati",
+                        style: Theme.of(context).textTheme.headline5.copyWith(
+                              letterSpacing: 1.5,
+                            ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 30,
+                      vertical: 20,
+                    ),
+                    child: Column(
+                      children: [
+                        Text(
+                          "acquista nuovi cuori o aspetta che vengano generati",
+                          style: TextStyle(fontSize: 18),
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(height: 10),
+                        Container(
+                          child: Countdown(
+                            seconds: timeLeft.inSeconds,
+                            build: (_, time) => Text(
+                              "time left: ${_printDuration(Duration(seconds: time.toInt()))}",
+                              style: TextStyle(fontSize: 18),
+                              textAlign: TextAlign.center,
+                            ),
+                            onFinished: () => Navigator.of(context).pop(),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            )),
+      );
+    }
+
+    void _resolve(Map question) async {
+      if (_hearts.hearts == 0) {
+        _openEndHearts();
+      } else {
+        if (!_active) {
+          setState(() {
+            _controller.pause();
+            _active = true;
+            _choosed = _questions.activeQuestion.answers.indexOf(question);
+          });
+          if (!_checkQuestion(_choosed)) {
+            await _hearts.removeHeart();
+
+            if (_hearts.hearts == 0) {
+              print('end hearts');
+            }
+          }
+        }
       }
     }
 
     void _endTIme() {
-      setState(() {
-        _active = true;
-      });
+      if (_hearts.hearts > 0) {
+        setState(() {
+          _active = true;
+        });
+      }
+    }
+
+    bool _isExplanationActive(QuestionType questionType) {
+      if (questionType == QuestionType.correct) {
+        if (_isGeneralQuestion) {
+          return true;
+        }
+        if (_isQuizQuestion) {
+          return true;
+        }
+        return false;
+      }
+      return false;
     }
 
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: buildGameAppBar(
         context,
+        hearts: _hearts.hearts,
         countdown: Countdown(
           controller: _controller,
           seconds: 30,
@@ -109,6 +213,8 @@ class _QuestionState extends State<Question> {
                   alignment: Alignment.topCenter,
                   child: QuestionSolutionContainer(
                     _questions.activeQuestion.situation,
+                    level: _isQuizQuestion ? _questions.quizIndex : null,
+                    maxLevel: _questions.quizLength,
                   ),
                 ),
               ),
@@ -138,9 +244,7 @@ class _QuestionState extends State<Question> {
                                         content: e['content'],
                                         questionType: e['type'],
                                       ),
-                                      active: _active &&
-                                          e['type'] == QuestionType.correct &&
-                                          _isGeneralQuestion,
+                                      active: _isExplanationActive(e['type']),
                                       explanation:
                                           _questions.activeQuestion.explanation,
                                     ),
@@ -164,9 +268,7 @@ class _QuestionState extends State<Question> {
                       if (_active == true && _choosed != null)
                         Container(
                           child: Text(
-                            _questions.activeQuestion.answers[_choosed]
-                                        ['type'] ==
-                                    QuestionType.correct
+                            _checkQuestion(_choosed)
                                 ? "Risposta esatta!"
                                 : "Risposta errata!",
                             style:
@@ -195,34 +297,41 @@ class _QuestionState extends State<Question> {
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 30.0),
                           child: CustomButton(
-                            _isGeneralQuestion
+                            _isGeneralQuestion || _isQuizQuestion
                                 ? "Prossima domanda"
                                 : _choosed != null
                                     ? "Scopri perchè"
                                     : "Soluzione",
                             onPressed: () async {
                               if (_isGeneralQuestion) {
-                                final ads = Ads();
-                                InterstitialAd interstitialAd =
-                                    ads.createInterstitialAd();
-
-                                if (_showAds.count == 3) {
-                                  interstitialAd
-                                    ..load()
-                                    ..show();
-                                }
-
-                                _showAds.increseCounter();
-                                print(_showAds.count);
-
                                 await _questions.getNewQuestion(
-                                    isGeneralCuluture: true);
+                                  gameType: GameType.general_question,
+                                );
                                 Navigator.of(context).pushNamedAndRemoveUntil(
+                                  Question.routeName,
+                                  ModalRoute.withName(ChooseGame.routeName),
+                                  arguments: {
+                                    "isGeneralCultureQuestion": true,
+                                    "isQuizQuestion": false,
+                                  },
+                                );
+                              }
+                              if (_isQuizQuestion) {
+                                if (_hearts.hearts == 0) {
+                                  _openEndHearts();
+                                } else {
+                                  await _questions.getQuizQuestion(
+                                    _questions.currentQuizId,
+                                  );
+                                  Navigator.of(context).pushNamedAndRemoveUntil(
                                     Question.routeName,
                                     ModalRoute.withName(ChooseGame.routeName),
                                     arguments: {
-                                      "isGeneralCultureQuestion": true,
-                                    });
+                                      "isGeneralCultureQuestion": false,
+                                      "isQuizQuestion": true,
+                                    },
+                                  );
+                                }
                               } else {
                                 final bool status =
                                     await _questions.checkSavedQuestion(

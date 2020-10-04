@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../providers/questions.dart';
 
 import '../widgets/question_solution.dart';
+import '../widgets/app_bars/title.dart';
 
 import '../screens/explanation.dart';
 
@@ -48,42 +49,10 @@ class _FavoritesState extends State<Favorites> {
               ),
             ),
           ),
-          Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(50),
-                  bottomRight: Radius.circular(50),
-                )),
-            child: Padding(
-              padding: const EdgeInsets.only(top: 50.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'SOLUZIONI SALVATE',
-                    style: Theme.of(context).textTheme.headline5.copyWith(
-                          color: Theme.of(context).primaryColor,
-                          fontSize: 25,
-                        ),
-                  ),
-                  Container(
-                    width: _size.width * .8,
-                    margin: const EdgeInsets.only(top: 10, bottom: 20),
-                    child: Text(
-                      "Salva le soluzioni che preferisci per conservarle e consultarle quando vuoi",
-                      // textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 18,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+          TitleAppBar(
+            title: "SOLUZIONI SALVATE",
+            content:
+                "Salva le soluzioni che preferisci per conservarle e consultarle quando vuoi",
           ),
           _loaded
               ? _questions.length > 0

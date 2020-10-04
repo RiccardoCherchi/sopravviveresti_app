@@ -4,14 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_admob/firebase_admob.dart';
 
-import '../helpers/ads.dart';
+import '../models/game_type.dart';
 
 import '../widgets/custom_button.dart';
 import '../widgets/question_solution.dart';
 import '../widgets/app_bars/explanation_bar.dart';
 
 import '../providers/questions.dart';
-import '../providers/show_ads.dart';
 
 import '../screens/question.dart';
 import '../screens/categories.dart';
@@ -24,7 +23,6 @@ class Explanation extends StatelessWidget {
     final _scaffoldKey = GlobalKey<ScaffoldState>();
 
     final _questions = Provider.of<Questions>(context, listen: false);
-    final _showAds = Provider.of<ShowAds>(context);
     final String _explanation = _questions.activeQuestion?.explanation;
 
     final Map _routeArguments =
@@ -42,18 +40,10 @@ class Explanation extends StatelessWidget {
       if (_localExplanation != null) {
         Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
       } else {
-        await _questions.getNewQuestionWithLastCategory();
-
-        final ads = Ads();
-        InterstitialAd interstitialAd = ads.createInterstitialAd();
-
-        if (_showAds.count == 3) {
-          interstitialAd
-            ..load()
-            ..show();
-        }
-
-        _showAds.increseCounter();
+        await _questions.getNewQuestion(
+          categoryId: _questions.lastCategoryId,
+          gameType: GameType.classic,
+        );
 
         Navigator.of(context).pushNamedAndRemoveUntil(
           Question.routeName,

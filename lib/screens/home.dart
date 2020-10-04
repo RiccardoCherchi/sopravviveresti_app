@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -5,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:provider/provider.dart';
 
 import '../styles/sopravviveresti_icons.dart';
 
@@ -15,6 +17,8 @@ import '../widgets/custom_button.dart';
 
 import '../screens/game_choose.dart';
 import '../screens/favorites.dart';
+
+import '../providers/hearts.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -40,6 +44,7 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     _checkVersion();
+    _setTimer();
     super.initState();
   }
 
@@ -52,6 +57,24 @@ class _HomeState extends State<Home> {
     if (!status) {
       _showVersionDialog();
     }
+  }
+
+  void _setTimer() async {
+    final _hearts = Provider.of<Hearts>(context, listen: false);
+    final _timeLeft = await _hearts.getTimeLeftForGeneration();
+
+    Timer createTimer(Duration timeLeft) {
+      print("timer creation");
+      return Timer(timeLeft, () async {
+        print("timer finished");
+        await _hearts.addHearts(3);
+        await _hearts.resetDate();
+        // await _hearts.changeTime();
+        createTimer(await _hearts.getTimeLeftForGeneration());
+      });
+    }
+
+    createTimer(_timeLeft);
   }
 
   Future _showVersionDialog() {
@@ -217,6 +240,30 @@ class _HomeState extends State<Home> {
                     } else {
                       _showVersionDialog();
                     }
+                  },
+                ),
+
+                //debug
+                SizedBox(height: 20),
+                // HomeButton(
+                //   text: 'reset hearts',
+                //   icon: Icons.refresh,
+                //   onPressed: () {
+                //     Provider.of<Hearts>(context, listen: false).addHearts(5);
+                //   },
+                // ),
+                HomeButton(
+                  text: 'reset date',
+                  icon: Icons.refresh,
+                  onPressed: () {
+                    Provider.of<Hearts>(context, listen: false).resetDate();
+                  },
+                ),
+                HomeButton(
+                  text: 'test date',
+                  icon: Icons.refresh,
+                  onPressed: () {
+                    Provider.of<Hearts>(context, listen: false).changeTime();
                   },
                 )
               ],

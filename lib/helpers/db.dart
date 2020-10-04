@@ -5,9 +5,23 @@ class DB {
   static Future<sql.Database> database() async {
     final dbPath = await sql.getDatabasesPath();
     return sql.openDatabase(path.join(dbPath, 'sopravviveresti.db'),
-        onCreate: (db, version) {
-      return db.execute(
-          'CREATE TABLE user_fav(id INT PRIMARY KEY, situation TEXT, explanation TEXT)');
+        onCreate: (db, version) async {
+      await db.execute(
+        "CREATE TABLE user_fav(id INT PRIMARY KEY, situation TEXT, explanation TEXT)",
+      );
+
+      await db.execute(
+        "CREATE TABLE hearts(id INT PRIMARY KEY, amount INT)",
+      );
+
+      await db.execute(
+        "CREATE TABLE hearts_time(id INT PRIMARY KEY, date TEXT)",
+      );
+
+      final date = DateTime.now().toUtc().add(Duration(days: 1));
+
+      await db.insert('hearts', {"id": 1, "amount": 5});
+      await db.insert("hearts_time", {"id": 1, "date": date.toIso8601String()});
     }, version: 1);
   }
 
@@ -33,5 +47,11 @@ class DB {
   static Future filterById(String table, int id) async {
     final db = await DB.database();
     return db.rawQuery('select * from $table where id = $id');
+  }
+
+  static Future updateById(
+      String table, int id, Map<String, dynamic> data) async {
+    final db = await DB.database();
+    return await db.update(table, data, where: 'id = ?', whereArgs: [id]);
   }
 }

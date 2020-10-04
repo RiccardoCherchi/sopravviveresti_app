@@ -31,11 +31,14 @@ class GameCard extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title.toUpperCase(),
-                  style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                    fontSize: 15,
+                Container(
+                  width: width * .5,
+                  child: Text(
+                    title.toUpperCase(),
+                    style: TextStyle(
+                      color: Theme.of(context).primaryColor,
+                      fontSize: 15,
+                    ),
                   ),
                 ),
                 Container(
