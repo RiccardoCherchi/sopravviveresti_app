@@ -1,4 +1,3 @@
-import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
@@ -122,8 +121,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                             .categories[_categoryId - 1].name,
                                     color: Theme.of(context).primaryColor,
                                     icon: _categoryId == null && !_random
-                                        ? Icons.arrow_forward
-                                        : Icons.check,
+                                        ? Icon(Icons.arrow_forward)
+                                        : Icon(Icons.check),
                                     onPressed: _openCategoryChooser,
                                   ),
                                 ),
@@ -204,12 +203,12 @@ class CategoryModal extends StatelessWidget {
                                 onPressed: () => _chooseCategory(
                                     categoryId: _categories.categories[i].id),
                                 color: Theme.of(context).primaryColor,
-                                icon: Icons.add,
+                                icon: Icon(Icons.add),
                               ),
                             )
                           : CustomButton(
                               "Casuale",
-                              icon: Icons.add,
+                              icon: Icon(Icons.add),
                               color: Theme.of(context).primaryColor,
                               onPressed: () => _chooseCategory(random: true),
                             ),

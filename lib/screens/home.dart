@@ -245,13 +245,16 @@ class _HomeState extends State<Home> {
 
                 //debug
                 SizedBox(height: 20),
-                // HomeButton(
-                //   text: 'reset hearts',
-                //   icon: Icons.refresh,
-                //   onPressed: () {
-                //     Provider.of<Hearts>(context, listen: false).addHearts(5);
-                //   },
-                // ),
+                HomeButton(
+                  text: 'reset hearts',
+                  icon: Icons.refresh,
+                  onPressed: () {
+                    Provider.of<Hearts>(context, listen: false).addHearts(
+                      5,
+                      bypass: true,
+                    );
+                  },
+                ),
                 HomeButton(
                   text: 'reset date',
                   icon: Icons.refresh,

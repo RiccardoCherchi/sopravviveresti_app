@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_admob/firebase_admob.dart';
 
 import '../models/game_type.dart';
 

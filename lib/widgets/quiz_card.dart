@@ -26,6 +26,7 @@ class QuizCard extends StatelessWidget {
             ),
             child: Image.network(
               category.imageUrl,
+              width: MediaQuery.of(context).size.width * .7,
             ),
           ),
           Container(

@@ -2,16 +2,17 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sopravviveresti_app/providers/hearts.dart';
 import 'package:timer_count_down/timer_controller.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 
 import '../providers/questions.dart';
+import '../providers/hearts.dart';
 
 import '../widgets/app_bars/game_app_bar.dart';
 import '../widgets/question_solution.dart';
 import '../widgets/answer.dart';
 import '../widgets/custom_button.dart';
+import '../widgets/custon_dialog.dart';
 
 import '../models/question_type.dart';
 import '../models/game_type.dart';
@@ -62,6 +63,7 @@ class _QuestionState extends State<Question> {
         _routeArguments != null ? _routeArguments['isQuizQuestion'] : false;
 
     final _questions = Provider.of<Questions>(context);
+
     final _hearts = Provider.of<Hearts>(context);
 
     bool _checkQuestion(int choosed) {
@@ -80,65 +82,66 @@ class _QuestionState extends State<Question> {
       final Duration timeLeft = await _hearts.getTimeLeftForGeneration();
 
       showDialog(
-        context: context,
-        builder: (_) => Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            backgroundColor: Colors.white,
-            child: Container(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      top: 15.0,
-                      bottom: 10.0,
-                    ),
-                    child: Center(
-                      child: Text(
-                        "Cuori terminati",
-                        style: Theme.of(context).textTheme.headline5.copyWith(
-                              letterSpacing: 1.5,
-                            ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 30,
-                      vertical: 20,
-                    ),
-                    child: Column(
-                      children: [
-                        Text(
-                          "acquista nuovi cuori o aspetta che vengano generati",
-                          style: TextStyle(fontSize: 18),
-                          textAlign: TextAlign.center,
+          context: context,
+          builder: (_) => CustomDialog(
+                title: 'Hai fnito le vite',
+                color: Colors.red,
+                child: Container(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 30,
+                          vertical: 10,
                         ),
-                        SizedBox(height: 10),
-                        Container(
-                          child: Countdown(
-                            seconds: timeLeft.inSeconds,
-                            build: (_, time) => Text(
-                              "time left: ${_printDuration(Duration(seconds: time.toInt()))}",
+                        child: Column(
+                          children: [
+                            Container(
+                              child: Countdown(
+                                seconds: timeLeft.inSeconds,
+                                build: (_, time) => Text(
+                                  "Alla prossima ricarica:\n ${_printDuration(Duration(seconds: time.toInt()))}",
+                                  style: TextStyle(fontSize: 18),
+                                  textAlign: TextAlign.center,
+                                ),
+                                onFinished: () => Navigator.of(context).pop(),
+                              ),
+                            ),
+                            Text(
+                              "Per ricominciare a giocare subito, acquista delle vite aggiuntive",
                               style: TextStyle(fontSize: 18),
                               textAlign: TextAlign.center,
                             ),
-                            onFinished: () => Navigator.of(context).pop(),
-                          ),
+                            Container(
+                              margin: const EdgeInsets.symmetric(
+                                vertical: 10,
+                                horizontal: 25,
+                              ),
+                              child: CustomButton(
+                                "Acquista",
+                                icon: Icon(
+                                  Icons.favorite,
+                                  color: Colors.red,
+                                ),
+                                textStyle: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 20,
+                                ),
+                                onPressed: () {},
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            )),
-      );
+                ),
+              ));
     }
 
     void _resolve(Map question) async {
-      if (_hearts.hearts == 0) {
+      if (_hearts.hearts == 0 && _isQuizQuestion) {
         _openEndHearts();
       } else {
         if (!_active) {
@@ -147,11 +150,13 @@ class _QuestionState extends State<Question> {
             _active = true;
             _choosed = _questions.activeQuestion.answers.indexOf(question);
           });
-          if (!_checkQuestion(_choosed)) {
-            await _hearts.removeHeart();
+          if (_isQuizQuestion) {
+            if (!_checkQuestion(_choosed)) {
+              await _hearts.removeHeart();
 
-            if (_hearts.hearts == 0) {
-              print('end hearts');
+              if (_hearts.hearts == 0) {
+                print('end hearts');
+              }
             }
           }
         }
@@ -167,7 +172,7 @@ class _QuestionState extends State<Question> {
     }
 
     bool _isExplanationActive(QuestionType questionType) {
-      if (questionType == QuestionType.correct) {
+      if (questionType == QuestionType.correct && _active) {
         if (_isGeneralQuestion) {
           return true;
         }
@@ -183,6 +188,7 @@ class _QuestionState extends State<Question> {
       backgroundColor: Colors.white,
       appBar: buildGameAppBar(
         context,
+        isQuiz: _isQuizQuestion,
         hearts: _hearts.hearts,
         countdown: Countdown(
           controller: _controller,
@@ -315,8 +321,7 @@ class _QuestionState extends State<Question> {
                                     "isQuizQuestion": false,
                                   },
                                 );
-                              }
-                              if (_isQuizQuestion) {
+                              } else if (_isQuizQuestion) {
                                 if (_hearts.hearts == 0) {
                                   _openEndHearts();
                                 } else {
@@ -387,76 +392,20 @@ class ExplanationContainer extends StatelessWidget {
                   onPressed: () {
                     showDialog(
                       context: context,
-                      builder: (_) => Dialog(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
+                      builder: (_) => CustomDialog(
+                        title: 'Spiegawdaw',
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 30,
+                            vertical: 20,
                           ),
-                          backgroundColor: Colors.white,
-                          child: Stack(
-                            children: [
-                              Container(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                        top: 15.0,
-                                        bottom: 10.0,
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          "Spiegazione",
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline5
-                                              .copyWith(
-                                                letterSpacing: 1.5,
-                                              ),
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 30,
-                                        vertical: 20,
-                                      ),
-                                      child: Text(
-                                        explanation,
-                                        style: TextStyle(fontSize: 18),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Positioned(
-                                top: 10,
-                                right: 10,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: Theme.of(context).primaryColor,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: SizedBox(
-                                    height: 30,
-                                    width: 30,
-                                    child: IconButton(
-                                      splashColor: Colors.transparent,
-                                      highlightColor: Colors.transparent,
-                                      padding: new EdgeInsets.all(0.0),
-                                      icon: Icon(
-                                        Icons.close,
-                                        color: Colors.white,
-                                        size: 25,
-                                      ),
-                                      onPressed: () =>
-                                          Navigator.of(context).pop(),
-                                    ),
-                                  ),
-                                ),
-                              )
-                            ],
-                          )),
+                          child: Text(
+                            explanation,
+                            style: TextStyle(fontSize: 18),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
                     );
                   },
                 ),

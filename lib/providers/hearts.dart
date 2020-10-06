@@ -26,8 +26,8 @@ class Hearts with ChangeNotifier {
     notifyListeners();
   }
 
-  Future addHearts(int amount) async {
-    if (_hearts == 0) {
+  Future addHearts(int amount, {bool bypass = false}) async {
+    if (_hearts == 0 || bypass) {
       await DB.updateById('hearts', 1, {
         "id": 1,
         "amount": _hearts + amount,

@@ -70,7 +70,10 @@ class ChooseGame extends StatelessWidget {
     void _openQuiz() async {
       try {
         await _categories.getCategoires(isQuiz: true);
-        Navigator.of(context).pushNamed(Quizzes.routeName);
+        Navigator.of(context).pushNamed(Quizzes.routeName, arguments: {
+          "isGeneralCultureQuestion": false,
+          "isQuizQuestion": true,
+        });
       } on SocketException catch (_) {
         showSocketError();
       }

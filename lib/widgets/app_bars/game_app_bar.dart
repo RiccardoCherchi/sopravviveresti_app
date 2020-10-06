@@ -7,6 +7,7 @@ import 'package:esys_flutter_share/esys_flutter_share.dart';
 Widget buildGameAppBar(
   BuildContext context, {
   @required Countdown countdown,
+  bool isQuiz = false,
   int hearts,
 }) {
   final _size = MediaQuery.of(context).size;
@@ -52,7 +53,7 @@ Widget buildGameAppBar(
                 child: countdown,
               ),
             ),
-            hearts != null
+            isQuiz
                 ? Row(
                     children: [
                       Icon(

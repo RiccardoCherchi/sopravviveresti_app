@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class CustomButton extends StatelessWidget {
   final String content;
   final Function onPressed;
-  final IconData icon;
+  final Icon icon;
   final Color color;
   final bool disable;
   final double borderWidth;
@@ -48,7 +48,7 @@ class CustomButton extends StatelessWidget {
             if (icon != null)
               Container(
                 margin: const EdgeInsets.only(left: 5),
-                child: Icon(icon),
+                child: icon,
               ),
           ],
         ),
