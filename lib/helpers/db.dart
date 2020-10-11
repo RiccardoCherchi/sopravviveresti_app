@@ -4,25 +4,47 @@ import 'package:path/path.dart' as path;
 class DB {
   static Future<sql.Database> database() async {
     final dbPath = await sql.getDatabasesPath();
-    return sql.openDatabase(path.join(dbPath, 'sopravviveresti.db'),
-        onCreate: (db, version) async {
-      await db.execute(
-        "CREATE TABLE user_fav(id INT PRIMARY KEY, situation TEXT, explanation TEXT)",
-      );
+    return sql.openDatabase(
+      path.join(dbPath, 'sopravviveresti.db'),
+      version: 2,
+      onCreate: (db, version) async {
+        await db.execute(
+          "CREATE TABLE user_fav(id INT PRIMARY KEY, situation TEXT, explanation TEXT)",
+        );
 
-      await db.execute(
-        "CREATE TABLE hearts(id INT PRIMARY KEY, amount INT)",
-      );
+        await db.execute(
+          "CREATE TABLE hearts(id INT PRIMARY KEY, amount INT)",
+        );
 
-      await db.execute(
-        "CREATE TABLE hearts_time(id INT PRIMARY KEY, date TEXT)",
-      );
+        await db.execute(
+          "CREATE TABLE hearts_time(id INT PRIMARY KEY, date TEXT)",
+        );
 
-      final date = DateTime.now().toUtc().add(Duration(days: 1));
+        final date = DateTime.now().toUtc().add(Duration(days: 1));
 
-      await db.insert('hearts', {"id": 1, "amount": 5});
-      await db.insert("hearts_time", {"id": 1, "date": date.toIso8601String()});
-    }, version: 1);
+        await db.insert('hearts', {"id": 1, "amount": 5});
+        await db
+            .insert("hearts_time", {"id": 1, "date": date.toIso8601String()});
+      },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        print(oldVersion);
+        if (newVersion == 2) {
+          await db.execute(
+            "CREATE TABLE hearts(id INT PRIMARY KEY, amount INT)",
+          );
+
+          await db.execute(
+            "CREATE TABLE hearts_time(id INT PRIMARY KEY, date TEXT)",
+          );
+
+          final date = DateTime.now().toUtc().add(Duration(days: 1));
+
+          await db.insert('hearts', {"id": 1, "amount": 5});
+          await db
+              .insert("hearts_time", {"id": 1, "date": date.toIso8601String()});
+        }
+      },
+    );
   }
 
   static Future insert(String table, Map<String, Object> data) async {

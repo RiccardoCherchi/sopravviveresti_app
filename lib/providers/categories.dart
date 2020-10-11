@@ -8,14 +8,16 @@ class Category {
   final String name;
   final bool isPremium;
   final String imageUrl;
+  final String priceKey;
 
-  Category(this.id, this.name, this.isPremium, this.imageUrl);
+  Category(this.id, this.name, this.isPremium, this.imageUrl, this.priceKey);
 
   Category.fromJson(Map<String, dynamic> json)
       : id = json['id'],
         name = json['name'],
         isPremium = json['is_premium'],
-        imageUrl = json['image'];
+        imageUrl = json['image'],
+        priceKey = json['key'];
 }
 
 class Categories with ChangeNotifier {

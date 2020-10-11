@@ -28,24 +28,22 @@ class _QuizzesState extends State<Quizzes> {
 
   @override
   void initState() {
-    final Stream purchaseUpdates =
-        InAppPurchaseConnection.instance.purchaseUpdatedStream;
-    _subscription = purchaseUpdates.listen((purchases) {
-      // _handlePurchaseUpdates(purchases);
-    });
-    test();
+    _initPayaments();
     super.initState();
   }
 
-  void test() async {
+  void _initPayaments() async {
+    final Stream purchaseUpdates =
+        InAppPurchaseConnection.instance.purchaseUpdatedStream;
+    _subscription = purchaseUpdates.listen((purchases) {
+      print("purchase: $purchases");
+      (purchases as List).forEach((element) {
+        InAppPurchaseConnection.instance.completePurchase(element);
+      });
+    });
+
     final bool available = await InAppPurchaseConnection.instance.isAvailable();
     print(available);
-    const Set<String> _kIds = {'single_quiz', 'product2'};
-    final ProductDetailsResponse response =
-        await InAppPurchaseConnection.instance.queryProductDetails(_kIds);
-    if (response.notFoundIDs.isNotEmpty) {
-      print(response.notFoundIDs);
-    }
   }
 
   @override
@@ -58,13 +56,38 @@ class _QuizzesState extends State<Quizzes> {
     final _quizzes = Provider.of<Categories>(context, listen: false);
     final _questions = Provider.of<Questions>(context, listen: false);
 
+    Set<String> getId(int id) {
+      return _quizzes.categories
+          .where((element) => element.id == id)
+          .map((e) => e.priceKey)
+          .toSet();
+    }
+
+    void _buy(int id) async {
+      final Set<String> _kIds = {"premium_quiz"};
+      final ProductDetailsResponse response =
+          await InAppPurchaseConnection.instance.queryProductDetails(_kIds);
+      if (response.notFoundIDs.isNotEmpty) {
+        print(response.notFoundIDs);
+      }
+
+      List<ProductDetails> products = response.productDetails;
+
+      final ProductDetails productDetails =
+          products[0]; // Saved earlier from queryPastPurchases().
+      final PurchaseParam purchaseParam =
+          PurchaseParam(productDetails: productDetails);
+      InAppPurchaseConnection.instance
+          .buyNonConsumable(purchaseParam: purchaseParam);
+    }
+
     void _loadQuestion(int id) async {
       final currentQuiz =
           _quizzes.categories.firstWhere((element) => element.id == id);
       if (currentQuiz.isPremium) {
         showDialog(
           context: context,
-          builder: (_) => BuyQuizDialog(currentQuiz.name),
+          builder: (_) => BuyQuizDialog(currentQuiz, _buy),
         );
       } else {
         _questions.resetQuizIndex();
@@ -120,9 +143,10 @@ class _QuizzesState extends State<Quizzes> {
 }
 
 class BuyQuizDialog extends StatelessWidget {
-  final String name;
+  final Category category;
+  final Function buyFunc;
 
-  BuyQuizDialog(this.name);
+  BuyQuizDialog(this.category, this.buyFunc);
   @override
   Widget build(BuildContext context) {
     return CustomDialog(
@@ -134,7 +158,7 @@ class BuyQuizDialog extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                "Acquista $name",
+                "Acquista ${category.name}",
                 style: TextStyle(fontSize: 18),
               ),
             ),
@@ -145,7 +169,7 @@ class BuyQuizDialog extends StatelessWidget {
               ),
               child: CustomButton(
                 "Acquista €2,99",
-                onPressed: () {},
+                onPressed: () => buyFunc(category.id),
                 textStyle: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 18,
