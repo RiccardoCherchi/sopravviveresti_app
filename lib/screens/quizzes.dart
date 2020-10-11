@@ -57,7 +57,7 @@ class _QuizzesState extends State<Quizzes> {
     final _questions = Provider.of<Questions>(context, listen: false);
 
     Set<String> getId(int id) {
-      return _quizzes.categories
+      return _quizzes.quizzes
           .where((element) => element.id == id)
           .map((e) => e.priceKey)
           .toSet();
@@ -83,7 +83,7 @@ class _QuizzesState extends State<Quizzes> {
 
     void _loadQuestion(int id) async {
       final currentQuiz =
-          _quizzes.categories.firstWhere((element) => element.id == id);
+          _quizzes.quizzes.firstWhere((element) => element.id == id);
       if (currentQuiz.isPremium) {
         showDialog(
           context: context,
@@ -124,7 +124,7 @@ class _QuizzesState extends State<Quizzes> {
                       itemBuilder: (_, i) => Container(
                         child: GestureDetector(
                           child: QuizCard(
-                            category: _quizzes.categories[i],
+                            quiz: _quizzes.quizzes[i],
                           ),
                           onTap: () => _loadQuestion(_quizzes.categories[i].id),
                         ),
@@ -143,7 +143,7 @@ class _QuizzesState extends State<Quizzes> {
 }
 
 class BuyQuizDialog extends StatelessWidget {
-  final Category category;
+  final Quiz category;
   final Function buyFunc;
 
   BuyQuizDialog(this.category, this.buyFunc);

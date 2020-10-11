@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import '../providers/categories.dart';
 
 class QuizCard extends StatelessWidget {
-  final Category category;
+  final Quiz quiz;
 
   QuizCard({
-    @required this.category,
+    @required this.quiz,
   });
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,7 @@ class QuizCard extends StatelessWidget {
               topRight: Radius.circular(30),
             ),
             child: Image.network(
-              category.imageUrl,
+              quiz.imageUrl,
               width: MediaQuery.of(context).size.width * .7,
             ),
           ),
@@ -48,7 +48,7 @@ class QuizCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          category.name,
+                          quiz.name,
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 18,
@@ -62,7 +62,7 @@ class QuizCard extends StatelessWidget {
                         ),
                       ],
                     ),
-                    if (category.isPremium)
+                    if (quiz.isPremium)
                       IconButton(
                         onPressed: () {},
                         padding: EdgeInsets.zero,

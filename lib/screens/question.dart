@@ -393,7 +393,7 @@ class ExplanationContainer extends StatelessWidget {
                     showDialog(
                       context: context,
                       builder: (_) => CustomDialog(
-                        title: 'Spiegawdaw',
+                        title: 'Spiegazione',
                         child: Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 30,
