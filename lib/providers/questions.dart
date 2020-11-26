@@ -27,8 +27,11 @@ class Questions with ChangeNotifier {
 
   int _quizIndex = 0;
   int _quizLength = 0;
-  int _lastCategoryId;
   int _currentQuizId;
+
+  int _correctQuizAnswers = 0;
+
+  int _lastCategoryId;
 
   List _excludeIdsClassic = [];
   List _exludeIdsGeneralQuestion = [];
@@ -49,6 +52,15 @@ class Questions with ChangeNotifier {
     return _quizIndex;
   }
 
+  int get correctQuizAnswers {
+    return _correctQuizAnswers;
+  }
+
+  set setCorrectQuizAnswers(int value) {
+    print(value);
+    _correctQuizAnswers = value;
+  }
+
   QuestionData get activeQuestion {
     return _activeQuestion;
   }
@@ -60,15 +72,15 @@ class Questions with ChangeNotifier {
 
   String _getUrl(GameType gameType, {int categoryId}) {
     if (gameType == GameType.classic) {
-      return "http://68.183.71.76:8000/question?category=$categoryId&";
+      return "https://sopravviveresti.howmuchismyoutfit.com/question?category=$categoryId&";
     } else {
-      return "http://68.183.71.76:8000/general-culture/question?";
+      return "https://sopravviveresti.howmuchismyoutfit.com/general-culture/question?";
     }
   }
 
   Future getQuizQuestion(int quizId) async {
-    final response = await http
-        .get("http://68.183.71.76:8000/quiz/question?quiz_id=$quizId");
+    final response = await http.get(
+        "https://sopravviveresti.howmuchismyoutfit.com/quiz/question?quiz_id=$quizId");
     final List data = json.decode(utf8.decode(response.bodyBytes));
 
     final List<QuestionData> quizQuestions = data
@@ -88,6 +100,12 @@ class Questions with ChangeNotifier {
 
     _quizLength = quizQuestions.length;
     _currentQuizId = quizId;
+
+    // randomize
+    final active = quizQuestions[_quizIndex];
+    active.answers..shuffle();
+
+    print("active quiz question: ${active.id}");
 
     _activeQuestion = quizQuestions[_quizIndex];
     _quizIndex++;

@@ -43,27 +43,33 @@ class Answer extends StatelessWidget {
             ),
           ],
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              content,
-              style: TextStyle(
-                fontSize: 20,
-              ),
-            ),
-            if (choosed)
-              Container(
-                margin: const EdgeInsets.only(left: 10),
-                child: Icon(
-                  questionType == QuestionType.correct
-                      ? Icons.done
-                      : Icons.close,
-                  size: 30,
-                  color: getColor(context, questionType),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  content,
+                  style: TextStyle(
+                    fontSize: 20,
+                  ),
                 ),
-              )
-          ],
+                if (choosed)
+                  Container(
+                    margin: const EdgeInsets.only(left: 10),
+                    child: Icon(
+                      questionType == QuestionType.correct
+                          ? Icons.done
+                          : Icons.close,
+                      size: 30,
+                      color: getColor(context, questionType),
+                    ),
+                  )
+              ],
+            ),
+          ),
         ),
       ),
     );

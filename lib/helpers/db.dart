@@ -30,18 +30,20 @@ class DB {
         print(oldVersion);
         if (newVersion == 2) {
           await db.execute(
-            "CREATE TABLE hearts(id INT PRIMARY KEY, amount INT)",
+            "CREATE TABLE IF NOT EXISTS hearts(id INT PRIMARY KEY, amount INT)",
           );
 
           await db.execute(
-            "CREATE TABLE hearts_time(id INT PRIMARY KEY, date TEXT)",
+            "CREATE TABLE IF NOT EXISTS hearts_time(id INT PRIMARY KEY, date TEXT)",
           );
 
           final date = DateTime.now().toUtc().add(Duration(days: 1));
 
-          await db.insert('hearts', {"id": 1, "amount": 5});
-          await db
-              .insert("hearts_time", {"id": 1, "date": date.toIso8601String()});
+          await db.insert('hearts', {"id": 1, "amount": 5},
+              conflictAlgorithm: sql.ConflictAlgorithm.ignore);
+          await db.insert(
+              "hearts_time", {"id": 1, "date": date.toIso8601String()},
+              conflictAlgorithm: sql.ConflictAlgorithm.ignore);
         }
       },
     );

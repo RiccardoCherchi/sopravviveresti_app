@@ -4,16 +4,18 @@ import '../providers/categories.dart';
 
 class QuizCard extends StatelessWidget {
   final Quiz quiz;
+  final bool unlocked;
 
   QuizCard({
     @required this.quiz,
+    @required this.unlocked,
   });
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(
         vertical: 15,
-        horizontal: MediaQuery.of(context).size.width * .15,
+        horizontal: MediaQuery.of(context).size.width * .10,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -26,7 +28,7 @@ class QuizCard extends StatelessWidget {
             ),
             child: Image.network(
               quiz.imageUrl,
-              width: MediaQuery.of(context).size.width * .7,
+              width: MediaQuery.of(context).size.width * .8,
             ),
           ),
           Container(
@@ -47,11 +49,14 @@ class QuizCard extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          quiz.name,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 18,
+                        Container(
+                          width: MediaQuery.of(context).size.width * .6,
+                          child: Text(
+                            quiz.name,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 17,
+                            ),
                           ),
                         ),
                         Text(
@@ -62,15 +67,14 @@ class QuizCard extends StatelessWidget {
                         ),
                       ],
                     ),
-                    if (quiz.isPremium)
+                    if (quiz.isPremium && !unlocked)
                       IconButton(
                         onPressed: () {},
-                        padding: EdgeInsets.zero,
                         icon: Icon(
-                          Icons.lock,
+                          Icons.lock_outline,
                           color: Colors.black,
                         ),
-                      )
+                      ),
                   ],
                 ),
               ],

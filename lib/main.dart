@@ -2,6 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:sopravviveresti_app/screens/score.dart';
 
 import './screens/home.dart';
 import './screens/categories.dart';
@@ -13,7 +14,6 @@ import './screens/quizzes.dart';
 
 import './providers/questions.dart';
 import './providers/categories.dart';
-import './providers/hearts.dart';
 
 void main() {
   InAppPurchaseConnection.enablePendingPurchases();
@@ -33,16 +33,13 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => Categories(),
         ),
-        ChangeNotifierProvider(
-          create: (_) => Hearts(),
-        ),
       ],
       child: MaterialApp(
         title: 'Sopravviveresti?',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
             primaryColor: Color(0xff6FCF97),
-            accentColor: Colors.yellow,
+            accentColor: Colors.yellow[600],
             fontFamily: "Montserrat",
             visualDensity: VisualDensity.adaptivePlatformDensity,
             textTheme: TextTheme(
@@ -59,6 +56,7 @@ class MyApp extends StatelessWidget {
           Favorites.routeName: (_) => Favorites(),
           ChooseGame.routeName: (_) => ChooseGame(),
           Quizzes.routeName: (_) => Quizzes(),
+          QuizScore.routeName: (_) => QuizScore(),
         },
       ),
     );

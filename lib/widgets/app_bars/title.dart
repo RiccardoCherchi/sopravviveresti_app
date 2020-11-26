@@ -27,7 +27,9 @@ class TitleAppBar extends StatelessWidget {
               title.toUpperCase(),
               style: Theme.of(context).textTheme.headline5.copyWith(
                     color: Theme.of(context).primaryColor,
-                    fontSize: 25,
+                    fontSize: 37,
+                    letterSpacing: 2,
+                    fontFamily: 'Anton',
                   ),
             ),
             Container(

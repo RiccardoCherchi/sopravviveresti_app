@@ -4,9 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
 
+import '../../widgets/custon_dialog.dart';
+import '../custom_button.dart';
+
 Widget buildGameAppBar(
   BuildContext context, {
   @required Countdown countdown,
+  Function buyHearts,
   bool isQuiz = false,
   int hearts,
 }) {
@@ -54,23 +58,31 @@ Widget buildGameAppBar(
               ),
             ),
             isQuiz
-                ? Row(
-                    children: [
-                      Icon(
-                        Icons.favorite,
-                        color: Color(0xffFF4F4F),
-                        size: 40,
-                      ),
-                      SizedBox(width: 2),
-                      Text(
-                        hearts.toString(),
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 40,
-                          fontWeight: FontWeight.w600,
+                ? GestureDetector(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (_) => BuyNewLives(buyHearts),
+                      );
+                    },
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.favorite,
+                          color: Color(0xffFF4F4F),
+                          size: 40,
                         ),
-                      )
-                    ],
+                        SizedBox(width: 2),
+                        Text(
+                          hearts.toString(),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 40,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        )
+                      ],
+                    ),
                   )
                 : IconButton(
                     onPressed: () => Share.text(
@@ -88,4 +100,50 @@ Widget buildGameAppBar(
       ),
     ),
   );
+}
+
+class BuyNewLives extends StatelessWidget {
+  final Function buyLives;
+
+  BuyNewLives(this.buyLives);
+  @override
+  Widget build(BuildContext context) {
+    return CustomDialog(
+      title: 'Acquista 5 vite',
+      color: Theme.of(context).primaryColor,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 30,
+          vertical: 10,
+        ),
+        child: Column(
+          children: [
+            Text(
+              "Acquista 5 nuove vite da usare nel gioco",
+              style: TextStyle(fontSize: 18),
+              textAlign: TextAlign.center,
+            ),
+            Container(
+              margin: const EdgeInsets.symmetric(
+                vertical: 10,
+                horizontal: 25,
+              ),
+              child: CustomButton(
+                "Acquista",
+                icon: Icon(
+                  Icons.favorite,
+                  color: Colors.red,
+                ),
+                textStyle: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 20,
+                ),
+                onPressed: buyLives,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

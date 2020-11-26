@@ -6,7 +6,6 @@ import 'package:timer_count_down/timer_controller.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 
 import '../providers/questions.dart';
-import '../providers/hearts.dart';
 
 import '../widgets/app_bars/game_app_bar.dart';
 import '../widgets/question_solution.dart';
@@ -19,6 +18,7 @@ import '../models/game_type.dart';
 
 import '../screens/explanation.dart';
 import '../screens/game_choose.dart';
+import '../screens/score.dart';
 
 class MyAndroidScrollBehavior extends ScrollBehavior {
   @override
@@ -62,113 +62,30 @@ class _QuestionState extends State<Question> {
     _isQuizQuestion =
         _routeArguments != null ? _routeArguments['isQuizQuestion'] : false;
 
-    final _questions = Provider.of<Questions>(context);
-
-    final _hearts = Provider.of<Hearts>(context);
+    final _questions = Provider.of<Questions>(context, listen: false);
 
     bool _checkQuestion(int choosed) {
-      return _questions.activeQuestion.answers[_choosed]['type'] ==
-          QuestionType.correct;
-    }
-
-    String _printDuration(Duration duration) {
-      String twoDigits(int n) => n.toString().padLeft(2, "0");
-      String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
-      String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
-      return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
-    }
-
-    void _openEndHearts() async {
-      final Duration timeLeft = await _hearts.getTimeLeftForGeneration();
-
-      showDialog(
-          context: context,
-          builder: (_) => CustomDialog(
-                title: 'Hai fnito le vite',
-                color: Colors.red,
-                child: Container(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 30,
-                          vertical: 10,
-                        ),
-                        child: Column(
-                          children: [
-                            Container(
-                              child: Countdown(
-                                seconds: timeLeft.inSeconds,
-                                build: (_, time) => Text(
-                                  "Alla prossima ricarica:\n ${_printDuration(Duration(seconds: time.toInt()))}",
-                                  style: TextStyle(fontSize: 18),
-                                  textAlign: TextAlign.center,
-                                ),
-                                onFinished: () => Navigator.of(context).pop(),
-                              ),
-                            ),
-                            Text(
-                              "Per ricominciare a giocare subito, acquista delle vite aggiuntive",
-                              style: TextStyle(fontSize: 18),
-                              textAlign: TextAlign.center,
-                            ),
-                            Container(
-                              margin: const EdgeInsets.symmetric(
-                                vertical: 10,
-                                horizontal: 25,
-                              ),
-                              child: CustomButton(
-                                "Acquista",
-                                icon: Icon(
-                                  Icons.favorite,
-                                  color: Colors.red,
-                                ),
-                                textStyle: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 20,
-                                ),
-                                onPressed: () {},
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ));
+      if (choosed != null) {
+        return _questions.activeQuestion.answers[_choosed]['type'] ==
+            QuestionType.correct;
+      }
+      return false;
     }
 
     void _resolve(Map question) async {
-      if (_hearts.hearts == 0 && _isQuizQuestion) {
-        _openEndHearts();
-      } else {
-        if (!_active) {
-          setState(() {
-            _controller.pause();
-            _active = true;
-            _choosed = _questions.activeQuestion.answers.indexOf(question);
-          });
-          if (_isQuizQuestion) {
-            if (!_checkQuestion(_choosed)) {
-              await _hearts.removeHeart();
-
-              if (_hearts.hearts == 0) {
-                print('end hearts');
-              }
-            }
-          }
-        }
+      if (!_active) {
+        setState(() {
+          _controller.pause();
+          _active = true;
+          _choosed = _questions.activeQuestion.answers.indexOf(question);
+        });
       }
     }
 
     void _endTIme() {
-      if (_hearts.hearts > 0) {
-        setState(() {
-          _active = true;
-        });
-      }
+      setState(() {
+        _active = true;
+      });
     }
 
     bool _isExplanationActive(QuestionType questionType) {
@@ -188,8 +105,6 @@ class _QuestionState extends State<Question> {
       backgroundColor: Colors.white,
       appBar: buildGameAppBar(
         context,
-        isQuiz: _isQuizQuestion,
-        hearts: _hearts.hearts,
         countdown: Countdown(
           controller: _controller,
           seconds: 30,
@@ -304,7 +219,9 @@ class _QuestionState extends State<Question> {
                           padding: const EdgeInsets.symmetric(vertical: 30.0),
                           child: CustomButton(
                             _isGeneralQuestion || _isQuizQuestion
-                                ? "Prossima domanda"
+                                ? _questions.quizIndex == _questions.quizLength
+                                    ? "Fine"
+                                    : "Prossima domanda"
                                 : _choosed != null
                                     ? "Scopri perchè"
                                     : "Soluzione",
@@ -322,9 +239,15 @@ class _QuestionState extends State<Question> {
                                   },
                                 );
                               } else if (_isQuizQuestion) {
-                                if (_hearts.hearts == 0) {
-                                  _openEndHearts();
+                                if (_questions.quizIndex ==
+                                    _questions.quizLength) {
+                                  Navigator.of(context)
+                                      .pushNamed(QuizScore.routeName);
                                 } else {
+                                  if (_checkQuestion(_choosed)) {
+                                    _questions.setCorrectQuizAnswers =
+                                        _questions.correctQuizAnswers + 1;
+                                  }
                                   await _questions.getQuizQuestion(
                                     _questions.currentQuizId,
                                   );
