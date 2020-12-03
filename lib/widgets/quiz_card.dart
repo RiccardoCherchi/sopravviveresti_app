@@ -60,7 +60,7 @@ class QuizCard extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          "20 domande",
+                          "${quiz.questionsLength} domande",
                           style: TextStyle(
                             fontSize: 12,
                           ),

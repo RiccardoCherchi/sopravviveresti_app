@@ -31,7 +31,7 @@ class _QuizScoreState extends State<QuizScore> {
         .firstWhere((element) => element.id == _questions.currentQuizId);
 
     return Scaffold(
-      appBar: buildExplanationppBar(context, scaffoldKey: null),
+      appBar: buildExplanationppBar(context, scaffoldKey: null, isQuiz: true),
       backgroundColor: Theme.of(context).primaryColor,
       body: Stack(
         children: [
@@ -114,9 +114,11 @@ class _QuizScoreState extends State<QuizScore> {
                     bottom: 10,
                   ),
                   child: GestureDetector(
-                    onTap: () {
+                    onTap: () async {
                       _questions.resetQuizIndex();
                       _questions.setCorrectQuizAnswers = 0;
+                      await _questions
+                          .getQuizQuestion(_questions.currentQuizId);
                       Navigator.of(context).pushNamedAndRemoveUntil(
                         Question.routeName,
                         (route) => false,

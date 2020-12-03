@@ -139,6 +139,13 @@ class ChooseGame extends StatelessWidget {
                       padding: const EdgeInsets.all(0),
                       children: [
                         GameCard(
+                          title: "Modalità domande multiple",
+                          content: "Domande basate su un’unica situazione",
+                          width: size.maxWidth * .8,
+                          imagePath: "assets/images/mountain_draw.svg",
+                          onPressed: _openQuiz,
+                        ),
+                        GameCard(
                           title: "Modalità classica",
                           content:
                               "Hai due opzioni per salvarti: quale sarà quella giusta?",
@@ -152,14 +159,6 @@ class ChooseGame extends StatelessWidget {
                           width: size.maxWidth * .8,
                           imagePath: "assets/images/earth_draw.svg",
                           onPressed: _openGeneralCulture,
-                        ),
-                        GameCard(
-                          title: "Modalità domande multiple",
-                          content:
-                              "Un corso di sopravvivenza a domande, sopravviverai?",
-                          width: size.maxWidth * .8,
-                          imagePath: "assets/images/mountain_draw.svg",
-                          onPressed: _openQuiz,
                         ),
                       ],
                     ),

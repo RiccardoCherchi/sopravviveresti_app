@@ -12,7 +12,7 @@ import '../screens/question.dart';
 
 import '../widgets/quiz_card.dart';
 import '../widgets/app_bars/title.dart';
-import '../widgets/custon_dialog.dart';
+import '../widgets/custom_dialog.dart';
 
 class Quizzes extends StatefulWidget {
   static const routeName = '/quizzes';
@@ -163,6 +163,7 @@ class _QuizzesState extends State<Quizzes> {
       } else {
         _questions.resetQuizIndex();
         await _questions.getQuizQuestion(id);
+        _questions.setCorrectQuizAnswers = 0;
         Navigator.of(context).pushNamed(Question.routeName, arguments: {
           "isQuizQuestion": true,
           "isGeneralCultureQuestion": false,
@@ -184,39 +185,39 @@ class _QuizzesState extends State<Quizzes> {
           Container(
             child: Column(
               children: [
-                TitleAppBar(
-                  title: "gioca",
-                  content: "Quiz multidomanda basati su un’unica situazione",
-                ),
+                TitleAppBar(title: "gioca"),
                 Expanded(
                   child: Container(
-                    child: ListView.builder(
-                      itemBuilder: (_, i) => Container(
-                        child: FutureBuilder<bool>(
-                            future: _checkQuizPurchase(_quizzes.quizzes[i].id),
-                            builder: (context, snapshot) {
-                              if (!snapshot.hasData) {
-                                return Center(
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 50,
-                                    ),
-                                    child: CircularProgressIndicator(),
-                                  ),
-                                );
-                              } else {
-                                return GestureDetector(
-                                  child: QuizCard(
-                                    quiz: _quizzes.quizzes[i],
-                                    unlocked: snapshot.data,
-                                  ),
-                                  onTap: () =>
-                                      _loadQuestion(_quizzes.quizzes[i].id),
-                                );
-                              }
-                            }),
-                      ),
-                      itemCount: _quizzes.quizzes.length,
+                    child: ListView(
+                      children: _quizzes.quizzes
+                          .map(
+                            (e) => Container(
+                              child: FutureBuilder<bool>(
+                                  future: _checkQuizPurchase(e.id),
+                                  builder: (context, snapshot) {
+                                    if (!snapshot.hasData) {
+                                      return Center(
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 50,
+                                          ),
+                                          child: CircularProgressIndicator(),
+                                        ),
+                                      );
+                                    } else {
+                                      return GestureDetector(
+                                        child: QuizCard(
+                                          quiz: e,
+                                          unlocked: snapshot.data,
+                                        ),
+                                        onTap: () => _loadQuestion(e.id),
+                                      );
+                                    }
+                                  }),
+                            ),
+                          )
+                          .toList(),
+                      // itemCount: _quizzes.quizzes.length,
                     ),
                   ),
                 ),
@@ -247,8 +248,22 @@ class BuyQuizDialog extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                "Acquista ${quiz.name}",
-                style: TextStyle(fontSize: 18),
+                "${quiz.name}",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                "Ogni acquisto supporta la produzione e contribuisce a mantenere l’app senza pubblicità!",
+                style: TextStyle(
+                  fontSize: 18,
+                ),
+                textAlign: TextAlign.center,
               ),
             ),
             Column(
@@ -259,7 +274,7 @@ class BuyQuizDialog extends StatelessWidget {
                     vertical: 15,
                   ),
                   child: CustomButton(
-                    "Acquista €2,99",
+                    "Acquista €2,29",
                     onPressed: () => buyQuiz(quiz.priceKey),
                     textStyle: TextStyle(
                       fontWeight: FontWeight.w600,
@@ -322,61 +337,48 @@ class BuyPackDialog extends StatelessWidget {
               ),
             ),
             SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                "Ogni acquisto supporta la produzione e contribuisce a mantenere l’app senza pubblicità!",
+                style: TextStyle(
+                  fontSize: 18,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
             Container(
               height: 200,
               child: ListView.builder(
                 itemBuilder: (_, i) => Container(
-                  padding: const EdgeInsets.all(5.0),
-                  child: quizPack.quizzes.asMap().containsKey(i)
-                      ? Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.arrow_forward,
-                              size: 20,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                            SizedBox(width: 10),
-                            Container(
-                              width: 200,
-                              child: Text(
-                                "${quizPack.quizzes[i].name}",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ],
-                        )
-                      : RichText(
-                          textAlign: TextAlign.center,
-                          text: TextSpan(
-                              text: "+ ",
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black,
-                              ),
-                              children: <TextSpan>[
-                                TextSpan(
-                                  text: "BONUS ",
-                                  style: TextStyle(
-                                    color: Colors.yellow[600],
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: "5 vite",
-                                )
-                              ]),
+                    padding: const EdgeInsets.all(5.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.arrow_forward,
+                          size: 20,
+                          color: Theme.of(context).primaryColor,
                         ),
-                ),
-                itemCount: quizPack.quizzes.length + 1,
+                        SizedBox(width: 10),
+                        Container(
+                          width: 200,
+                          child: Text(
+                            "${quizPack.quizzes[i].name}",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    )),
+                itemCount: quizPack.quizzes.length,
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(bottom: 15, top: 5),
+              padding: const EdgeInsets.only(bottom: 20, top: 20),
               child: CustomButton(
                 "Acquista ${quizPack.price}€",
                 onPressed: () => buyPack(quizPack.priceKey),

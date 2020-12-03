@@ -11,7 +11,7 @@ import '../widgets/app_bars/game_app_bar.dart';
 import '../widgets/question_solution.dart';
 import '../widgets/answer.dart';
 import '../widgets/custom_button.dart';
-import '../widgets/custon_dialog.dart';
+import '../widgets/custom_dialog.dart';
 
 import '../models/question_type.dart';
 import '../models/game_type.dart';
@@ -239,15 +239,15 @@ class _QuestionState extends State<Question> {
                                   },
                                 );
                               } else if (_isQuizQuestion) {
+                                if (_checkQuestion(_choosed)) {
+                                  _questions.setCorrectQuizAnswers =
+                                      _questions.correctQuizAnswers + 1;
+                                }
                                 if (_questions.quizIndex ==
                                     _questions.quizLength) {
                                   Navigator.of(context)
                                       .pushNamed(QuizScore.routeName);
                                 } else {
-                                  if (_checkQuestion(_choosed)) {
-                                    _questions.setCorrectQuizAnswers =
-                                        _questions.correctQuizAnswers + 1;
-                                  }
                                   await _questions.getQuizQuestion(
                                     _questions.currentQuizId,
                                   );
@@ -322,10 +322,18 @@ class ExplanationContainer extends StatelessWidget {
                             horizontal: 30,
                             vertical: 20,
                           ),
-                          child: Text(
-                            explanation,
-                            style: TextStyle(fontSize: 18),
-                            textAlign: TextAlign.center,
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              maxHeight:
+                                  MediaQuery.of(context).size.height * .5,
+                            ),
+                            child: SingleChildScrollView(
+                              child: Text(
+                                explanation,
+                                style: TextStyle(fontSize: 18),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
                           ),
                         ),
                       ),

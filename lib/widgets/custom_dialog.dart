@@ -25,8 +25,8 @@ class CustomDialog extends StatelessWidget {
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(
-                      top: 15.0,
-                      bottom: 10.0,
+                      top: 40.0,
+                      bottom: 5.0,
                     ),
                     child: Center(
                       child: Text(
@@ -38,7 +38,10 @@ class CustomDialog extends StatelessWidget {
                       ),
                     ),
                   ),
-                  child,
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: child,
+                  ),
                 ],
               ),
             ),

@@ -23,6 +23,7 @@ class Quiz {
   final String name;
   final String imageUrl;
   final String priceKey;
+  final int questionsLength;
   bool isPremium;
 
   Quiz(
@@ -31,6 +32,7 @@ class Quiz {
     this.priceKey,
     this.name,
     this.isPremium,
+    this.questionsLength,
     this.pack_id,
   );
 
@@ -40,7 +42,8 @@ class Quiz {
         imageUrl = json['image'],
         priceKey = json['key'],
         isPremium = json['is_premium'],
-        pack_id = json['pack_id'];
+        pack_id = json['pack_id'],
+        questionsLength = json['questions_length'];
 }
 
 class QuizPack {

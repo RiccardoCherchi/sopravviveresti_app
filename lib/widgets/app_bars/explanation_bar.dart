@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:esys_flutter_share/esys_flutter_share.dart';
 
 import '../../providers/questions.dart';
 
@@ -19,6 +22,7 @@ SnackBar buildSnackBar(BuildContext context, String content) {
 Widget buildExplanationppBar(
   BuildContext context, {
   bool status = false,
+  bool isQuiz = false,
   int id,
   @required GlobalKey<ScaffoldState> scaffoldKey,
 }) {
@@ -58,10 +62,17 @@ Widget buildExplanationppBar(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            StarIcon(
-              status,
-              save: _saveQuestion,
-              remove: _removeQuestion,
+            IconButton(
+              icon: Icon(
+                Icons.home,
+                size: 40,
+                color: Colors.white,
+              ),
+              onPressed: () => Navigator.pushNamedAndRemoveUntil(
+                context,
+                '/',
+                (route) => false,
+              ),
             ),
             Container(
               child: Text(
@@ -75,18 +86,23 @@ Widget buildExplanationppBar(
                     ),
               ),
             ),
-            IconButton(
-              icon: Icon(
-                Icons.home,
-                size: 40,
-                color: Colors.white,
-              ),
-              onPressed: () => Navigator.pushNamedAndRemoveUntil(
-                context,
-                '/',
-                (route) => false,
-              ),
-            ),
+            !isQuiz
+                ? StarIcon(
+                    status,
+                    save: _saveQuestion,
+                    remove: _removeQuestion,
+                  )
+                : IconButton(
+                    onPressed: () => Share.text(
+                        'Sopravviveresti?',
+                        'Sei in una situazione di pericolo e hai due opzioni per salvarti: quale delle due sarà la tua salvezza? \n${Platform.isIOS ? 'https://apps.apple.com/app/id1529738913' : 'https://play.google.com/store/apps/details?id=com.hmimo.sopravviveresti'}',
+                        'text/plain'),
+                    icon: Icon(
+                      Icons.share,
+                      size: 40,
+                      color: Colors.white,
+                    ),
+                  ),
           ],
         ),
       ),

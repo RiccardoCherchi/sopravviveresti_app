@@ -17,7 +17,8 @@ class GameCard extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return GestureDetector(
+      onTap: onPressed,
       child: Container(
         width: width,
         margin: const EdgeInsets.symmetric(vertical: 20),
@@ -51,14 +52,11 @@ class GameCard extends StatelessWidget {
                 ),
                 Row(
                   children: [
-                    GestureDetector(
-                      onTap: onPressed,
-                      child: Text(
-                        "GIOCA",
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.yellow,
-                        ),
+                    Text(
+                      "GIOCA",
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.yellow,
                       ),
                     ),
                     Icon(Icons.arrow_forward, color: Colors.yellow),

@@ -67,12 +67,18 @@ class Questions with ChangeNotifier {
 
   void resetQuizIndex() {
     _quizIndex = 0;
+    print("quiz index was resetted: $_quizIndex");
     notifyListeners();
   }
 
   String _getUrl(GameType gameType, {int categoryId}) {
     if (gameType == GameType.classic) {
-      return "https://sopravviveresti.howmuchismyoutfit.com/question?category=$categoryId&";
+      String url = "https://sopravviveresti.howmuchismyoutfit.com/question?";
+      if (categoryId != null) {
+        return "${url}category=$categoryId&";
+      } else {
+        return url;
+      }
     } else {
       return "https://sopravviveresti.howmuchismyoutfit.com/general-culture/question?";
     }
@@ -120,7 +126,7 @@ class Questions with ChangeNotifier {
     }
     String url = _getUrl(gameType, categoryId: categoryId);
 
-    if (gameType == GameType.general_question) {
+    if (gameType == GameType.general_question || gameType == GameType.classic) {
       if (_exludeIdsGeneralQuestion.isNotEmpty) {
         print("Initialize exlude general question lists");
 

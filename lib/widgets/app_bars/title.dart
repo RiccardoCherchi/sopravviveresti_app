@@ -4,7 +4,7 @@ class TitleAppBar extends StatelessWidget {
   final String title;
   final String content;
 
-  TitleAppBar({@required this.title, @required this.content});
+  TitleAppBar({@required this.title, this.content});
   @override
   Widget build(BuildContext context) {
     final _size = MediaQuery.of(context).size;
@@ -32,18 +32,19 @@ class TitleAppBar extends StatelessWidget {
                     fontFamily: 'Anton',
                   ),
             ),
-            Container(
-              width: _size.width * .8,
-              margin: const EdgeInsets.only(top: 10, bottom: 20),
-              child: Text(
-                content,
-                // textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 18,
+            if (content != null)
+              Container(
+                width: _size.width * .8,
+                margin: const EdgeInsets.only(top: 10, bottom: 20),
+                child: Text(
+                  content,
+                  // textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 18,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,
               ),
-            ),
           ],
         ),
       ),

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
 
-import '../../widgets/custon_dialog.dart';
+import '../custom_dialog.dart';
 import '../custom_button.dart';
 
 Widget buildGameAppBar(
