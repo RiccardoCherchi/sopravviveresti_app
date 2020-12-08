@@ -14,6 +14,8 @@ import '../widgets/quiz_card.dart';
 import '../widgets/app_bars/title.dart';
 import '../widgets/custom_dialog.dart';
 
+import '../providers/products.dart';
+
 class Quizzes extends StatefulWidget {
   static const routeName = '/quizzes';
 
@@ -40,7 +42,8 @@ class _QuizzesState extends State<Quizzes> {
   void _asyncInitState() async {
     await _initPayaments();
     _getProducts();
-    await _getPastPurchases();
+    // await _getPastPurchases();
+    _purchases = Provider.of<Products>(context, listen: false).purchases;
   }
 
   Future<void> _initPayaments() async {
@@ -60,15 +63,16 @@ class _QuizzesState extends State<Quizzes> {
     });
   }
 
-  Future<void> _getPastPurchases() async {
-    QueryPurchaseDetailsResponse response = await _iap.queryPastPurchases();
+  // Future<void> _getPastPurchases() async {
+  //   QueryPurchaseDetailsResponse response = await _iap.queryPastPurchases();
 
-    print(response.pastPurchases);
-    setState(() {
-      _purchases = response.pastPurchases;
-    });
-    _purchases.forEach((element) => print("buyed -> ${element.productID}"));
-  }
+  //   print(response.pastPurchases);
+  //   setState(() {
+  //     _purchases = response.pastPurchases;
+  //   });
+  //   _purchases.forEach((element) => print("buyed -> ${element.productID}"));
+
+  // }
 
   Future<Set<String>> _getId() async {
     final quizzes = Provider.of<Categories>(context, listen: false)

@@ -18,6 +18,8 @@ import '../widgets/custom_button.dart';
 import '../screens/game_choose.dart';
 import '../screens/favorites.dart';
 
+import '../providers/products.dart';
+
 class Home extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();
@@ -42,6 +44,7 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     _checkVersion();
+    getPastPurchases();
     super.initState();
   }
 
@@ -54,6 +57,10 @@ class _HomeState extends State<Home> {
     if (!status) {
       _showVersionDialog();
     }
+  }
+
+  void getPastPurchases() async {
+    await Provider.of<Products>(context, listen: false).getPastPurchases();
   }
 
   Future _showVersionDialog() {
@@ -124,58 +131,91 @@ class _HomeState extends State<Home> {
       endDrawer: Drawer(
         child: Container(
           child: Container(
-            margin: const EdgeInsets.only(top: 80, bottom: 40),
+            margin: const EdgeInsets.only(top: 40, bottom: 0),
             child: Column(
               children: [
-                Text(
-                  "Hai qualche idea per una situazione da suggerirci?\nPensi che una soluzione sia parzialmente o del tutto errata?",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 18,
+                Container(
+                  alignment: Alignment.topCenter,
+                  child: Text(
+                    'Sopravviveresti',
+                    style: Theme.of(context).textTheme.headline5.copyWith(
+                          fontFamily: "Anton",
+                          fontSize: 32,
+                          color: Theme.of(context).primaryColor,
+                        ),
                   ),
                 ),
                 Container(
-                  margin: const EdgeInsets.all(15),
-                  child: GestureDetector(
-                    onTap: () =>
-                        launch('https://www.instagram.com/sopravviveresti/'),
-                    child: Column(
-                      children: [
-                        Text(
-                          "Scrivici su\nInstagram!",
-                          style: TextStyle(
-                            fontSize: 18,
-                          ),
-                        ),
-                        SizedBox(height: 5),
-                        FaIcon(
-                          FontAwesomeIcons.instagram,
-                          size: 20,
-                        ),
-                      ],
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 50, vertical: 5),
+                    child: Text(
+                      "Quiz sulla sopravvivenza e sulla natura con tre modalità di gioco: quante ne sai?",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
                     ),
                   ),
                 ),
                 Spacer(),
-                Divider(
-                  color: Colors.black45,
-                  thickness: 1,
-                  endIndent: 0,
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 55),
+                  child: CustomButton(
+                    "Ripristina acquisti",
+                    color: Theme.of(context).primaryColor,
+                    textStyle: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 18,
+                    ),
+                    onPressed: () {
+                      Provider.of<Products>(context, listen: false)
+                          .getPastPurchases();
+                    },
+                  ),
                 ),
                 Container(
                   child: Column(
                     children: [
-                      DrawerFooterElement(
+                      CustomButton(
                         "Privacy policy",
-                        FontAwesomeIcons.lock,
-                        redirect: () => launch(
+                        textStyle: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 18,
+                        ),
+                        onPressed: () => launch(
                             "https://howmuchismyoutfit.com/policies/sopravviveresti/policy.html"),
                       ),
-                      DrawerFooterElement(
+                      SizedBox(height: 15),
+                      CustomButton(
                         "Termini e condizioni",
-                        FontAwesomeIcons.questionCircle,
-                        redirect: () => launch(
+                        textStyle: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 18,
+                        ),
+                        onPressed: () => launch(
                             "https://howmuchismyoutfit.com/policies/sopravviveresti/terms.html"),
+                      ),
+                      GestureDetector(
+                        onTap: () => launch(
+                          "https://www.instagram.com/sopravviveresti/",
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 35),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(FontAwesomeIcons.instagram),
+                              SizedBox(width: 5),
+                              Text(
+                                "@sopravviveresti",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
                       )
                     ],
                   ),
@@ -265,41 +305,6 @@ class _HomeState extends State<Home> {
             ),
           )
         ],
-      ),
-    );
-  }
-}
-
-class DrawerFooterElement extends StatelessWidget {
-  final String text;
-  final IconData icon;
-  final Function redirect;
-
-  DrawerFooterElement(this.text, this.icon, {@required this.redirect});
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: redirect,
-      child: Container(
-        margin: const EdgeInsets.only(top: 20),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              text,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            SizedBox(width: 10),
-            Icon(
-              icon,
-              size: 18,
-            ),
-          ],
-        ),
       ),
     );
   }

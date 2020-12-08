@@ -218,13 +218,16 @@ class _QuestionState extends State<Question> {
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 30.0),
                           child: CustomButton(
-                            _isGeneralQuestion || _isQuizQuestion
-                                ? _questions.quizIndex == _questions.quizLength
-                                    ? "Fine"
-                                    : "Prossima domanda"
-                                : _choosed != null
-                                    ? "Scopri perchè"
-                                    : "Soluzione",
+                            !_isGeneralQuestion
+                                ? _isQuizQuestion
+                                    ? _questions.quizIndex ==
+                                            _questions.quizLength
+                                        ? "Fine"
+                                        : "Prossima domanda"
+                                    : _choosed != null
+                                        ? "Scopri perchè"
+                                        : "Soluzione"
+                                : "Prossima domanda",
                             onPressed: () async {
                               if (_isGeneralQuestion) {
                                 await _questions.getNewQuestion(

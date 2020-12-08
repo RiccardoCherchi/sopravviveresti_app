@@ -31,7 +31,10 @@ class HomeButton extends StatelessWidget {
               text.toUpperCase(),
               style: Theme.of(context).textTheme.headline5.copyWith(
                     color: Colors.white,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.normal,
+                    fontFamily: 'Anton',
+                    letterSpacing: 2.5,
+                    fontSize: 30,
                   ),
             ),
           ],

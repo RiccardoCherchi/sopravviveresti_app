@@ -14,6 +14,7 @@ import './screens/quizzes.dart';
 
 import './providers/questions.dart';
 import './providers/categories.dart';
+import './providers/products.dart';
 
 void main() {
   InAppPurchaseConnection.enablePendingPurchases();
@@ -33,6 +34,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => Categories(),
         ),
+        ChangeNotifierProvider(
+          create: (_) => Products(),
+        )
       ],
       child: MaterialApp(
         title: 'Sopravviveresti?',
