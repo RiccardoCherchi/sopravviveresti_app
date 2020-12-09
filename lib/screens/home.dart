@@ -14,6 +14,7 @@ import '../helpers/check_version.dart';
 
 import '../widgets/home_button.dart';
 import '../widgets/custom_button.dart';
+import '../widgets/app_bars/explanation_bar.dart';
 
 import '../screens/game_choose.dart';
 import '../screens/favorites.dart';
@@ -44,7 +45,6 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     _checkVersion();
-    getPastPurchases();
     super.initState();
   }
 
@@ -57,10 +57,6 @@ class _HomeState extends State<Home> {
     if (!status) {
       _showVersionDialog();
     }
-  }
-
-  void getPastPurchases() async {
-    await Provider.of<Products>(context, listen: false).getPastPurchases();
   }
 
   Future _showVersionDialog() {
@@ -168,9 +164,12 @@ class _HomeState extends State<Home> {
                       fontWeight: FontWeight.w600,
                       fontSize: 18,
                     ),
-                    onPressed: () {
-                      Provider.of<Products>(context, listen: false)
+                    onPressed: () async {
+                      await Provider.of<Products>(context, listen: false)
                           .getPastPurchases();
+                      _scaffoldKey.currentState.showSnackBar(
+                        buildSnackBar(context, "Acquisti ripristinati!"),
+                      );
                     },
                   ),
                 ),

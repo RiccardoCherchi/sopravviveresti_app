@@ -28,7 +28,7 @@ class _QuizzesState extends State<Quizzes> {
 
   StreamSubscription<List<PurchaseDetails>> _subscription;
   List<ProductDetails> _products = [];
-  List<PurchaseDetails> _purchases = [];
+  List<String> _purchases = [];
 
   @override
   void initState() {
@@ -43,7 +43,9 @@ class _QuizzesState extends State<Quizzes> {
     await _initPayaments();
     _getProducts();
     // await _getPastPurchases();
-    _purchases = Provider.of<Products>(context, listen: false).purchases;
+    _purchases =
+        await Provider.of<Products>(context, listen: false).getLocalPurchases();
+    print("purchases $_purchases");
   }
 
   Future<void> _initPayaments() async {
@@ -53,11 +55,15 @@ class _QuizzesState extends State<Quizzes> {
     final Stream purchaseUpdates = _iap.purchaseUpdatedStream;
     _subscription = purchaseUpdates.listen((purchases) {
       print("new purchase: $purchases");
-      (purchases as List).forEach((element) async {
+      (purchases as List<PurchaseDetails>).forEach((element) async {
+        if (element.productID != null) {
+          await Provider.of<Products>(context, listen: false)
+              .addNewProduct(element.productID);
+        }
         await _iap.completePurchase(element);
         Navigator.of(context).pop();
         setState(() {
-          _purchases.add(element);
+          _purchases.add(element.productID);
         });
       });
     });
@@ -137,11 +143,11 @@ class _QuizzesState extends State<Quizzes> {
     Future<bool> _checkQuizPurchase(int id) async {
       final quiz = _quizzes.quizzes.firstWhere((element) => element.id == id);
       final quizPurchase =
-          _purchases.where((element) => element.productID == quiz.priceKey);
+          _purchases.where((element) => element == quiz.priceKey);
 
       final QuizPack pack = await _quizzes.getPackByQuiz(quiz.id);
       final packPurchase =
-          _purchases.where((element) => element.productID == pack.priceKey);
+          _purchases.where((element) => element == pack.priceKey);
 
       if (quizPurchase.isEmpty && packPurchase.isEmpty) {
         return false;
@@ -192,36 +198,38 @@ class _QuizzesState extends State<Quizzes> {
                 TitleAppBar(title: "gioca"),
                 Expanded(
                   child: Container(
-                    child: ListView(
-                      children: _quizzes.quizzes
-                          .map(
-                            (e) => Container(
-                              child: FutureBuilder<bool>(
-                                  future: _checkQuizPurchase(e.id),
-                                  builder: (context, snapshot) {
-                                    if (!snapshot.hasData) {
-                                      return Center(
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                            vertical: 50,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: _quizzes.quizzes
+                            .map(
+                              (e) => Container(
+                                child: FutureBuilder<bool>(
+                                    future: _checkQuizPurchase(e.id),
+                                    builder: (context, snapshot) {
+                                      if (!snapshot.hasData) {
+                                        return Center(
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                              vertical: 50,
+                                            ),
+                                            child: CircularProgressIndicator(),
                                           ),
-                                          child: CircularProgressIndicator(),
-                                        ),
-                                      );
-                                    } else {
-                                      return GestureDetector(
-                                        child: QuizCard(
-                                          quiz: e,
-                                          unlocked: snapshot.data,
-                                        ),
-                                        onTap: () => _loadQuestion(e.id),
-                                      );
-                                    }
-                                  }),
-                            ),
-                          )
-                          .toList(),
-                      // itemCount: _quizzes.quizzes.length,
+                                        );
+                                      } else {
+                                        return GestureDetector(
+                                          child: QuizCard(
+                                            quiz: e,
+                                            unlocked: snapshot.data,
+                                          ),
+                                          onTap: () => _loadQuestion(e.id),
+                                        );
+                                      }
+                                    }),
+                              ),
+                            )
+                            .toList(),
+                        // itemCount: _quizzes.quizzes.length,
+                      ),
                     ),
                   ),
                 ),
