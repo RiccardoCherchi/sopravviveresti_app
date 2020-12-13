@@ -38,7 +38,7 @@ dependencies:
   url_launcher: ^5.5.0
   esys_flutter_share: ^1.0.2
   package_info: ^0.4.3
-  in_app_purchase: ^0.3.4+10
+  in_app_purchase: ^0.3.4+16
   
 
 
