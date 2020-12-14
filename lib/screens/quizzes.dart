@@ -136,7 +136,7 @@ class _QuizzesState extends State<Quizzes> {
       );
 
       final PurchaseParam purchaseParam =
-          PurchaseParam(productDetails: productDetails);
+          PurchaseParam(productDetails: productDetails, sandboxTesting: true);
       _iap.buyNonConsumable(purchaseParam: purchaseParam);
     }
 

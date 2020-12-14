@@ -6,11 +6,21 @@ class DB {
     final dbPath = await sql.getDatabasesPath();
     return sql.openDatabase(
       path.join(dbPath, 'sopravviveresti.db'),
-      version: 1,
+      version: 2,
       onCreate: (db, version) async {
         await db.execute(
-          "CREATE TABLE purchases(id INTEGER PRIMARY KEY AUTOINCREMENT, product_id TEXT)",
+          "CREATE TABLE IF NOT EXISTS purchases(id INTEGER PRIMARY KEY AUTOINCREMENT, product_id TEXT)",
         );
+        await db.execute(
+          "CREATE TABLE IF NOT EXISTS user_fav(id INT PRIMARY KEY, situation TEXT, explanation TEXT)",
+        );
+      },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        if (newVersion == 2) {
+          await db.execute(
+            "CREATE TABLE IF NOT EXISTS user_fav(id INT PRIMARY KEY, situation TEXT, explanation TEXT)",
+          );
+        }
       },
     );
   }
