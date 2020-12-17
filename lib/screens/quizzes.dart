@@ -56,16 +56,18 @@ class _QuizzesState extends State<Quizzes> {
     _subscription = purchaseUpdates.listen((purchases) {
       print("new purchase: $purchases");
       (purchases as List<PurchaseDetails>).forEach((element) async {
-        if (element.productID != null) {
+	print("status ${element.status}");
+        await _iap.completePurchase(element);
+	if (element.productID != null && element.status == PurchaseStatus.purchased) {
           await Provider.of<Products>(context, listen: false)
               .addNewProduct(element.productID);
+	  setState(() {
+          	_purchases.add(element.productID);
+          });
+
         }
-        await _iap.completePurchase(element);
         Navigator.of(context).pop();
-        setState(() {
-          _purchases.add(element.productID);
         });
-      });
     });
   }
 
@@ -126,7 +128,7 @@ class _QuizzesState extends State<Quizzes> {
       ); // Saved earlier from queryPastPurchases().
 
       final PurchaseParam purchaseParam =
-          PurchaseParam(productDetails: productDetails);
+          PurchaseParam(productDetails: productDetails, sandboxTesting: false);
       _iap.buyNonConsumable(purchaseParam: purchaseParam);
     }
 
@@ -136,7 +138,7 @@ class _QuizzesState extends State<Quizzes> {
       );
 
       final PurchaseParam purchaseParam =
-          PurchaseParam(productDetails: productDetails, sandboxTesting: true);
+          PurchaseParam(productDetails: productDetails, sandboxTesting: false);
       _iap.buyNonConsumable(purchaseParam: purchaseParam);
     }
 
