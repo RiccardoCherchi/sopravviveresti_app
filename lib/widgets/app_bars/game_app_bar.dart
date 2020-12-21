@@ -1,18 +1,13 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
 
-import '../custom_dialog.dart';
-import '../custom_button.dart';
-
 Widget buildGameAppBar(
   BuildContext context, {
   @required Countdown countdown,
-  Function buyHearts,
-  bool isQuiz = false,
-  int hearts,
 }) {
   final _size = MediaQuery.of(context).size;
 
@@ -57,44 +52,30 @@ Widget buildGameAppBar(
                 child: countdown,
               ),
             ),
-            isQuiz
-                ? GestureDetector(
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (_) => BuyNewLives(buyHearts),
-                      );
-                    },
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.favorite,
-                          color: Color(0xffFF4F4F),
-                          size: 40,
-                        ),
-                        SizedBox(width: 2),
-                        Text(
-                          hearts.toString(),
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 40,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        )
-                      ],
-                    ),
-                  )
-                : IconButton(
-                    onPressed: () => Share.text(
-                        'Sopravviveresti?',
-                        'Sei in una situazione di pericolo e hai due opzioni per salvarti: quale delle due sarà la tua salvezza? \n${Platform.isIOS ? 'https://apps.apple.com/app/id1529738913' : 'https://play.google.com/store/apps/details?id=com.hmimo.sopravviveresti'}',
-                        'text/plain'),
-                    icon: Icon(
-                      Icons.share,
-                      size: 40,
-                      color: Colors.white,
-                    ),
-                  ),
+            // Timer(
+            //   countdown: countdown,
+            // ),
+            // CustomPaint(
+            //   painter: TimerPainter(
+            //     mainColor: Theme.of(context).primaryColor,
+            //   ),
+            //   child: Container(
+            //     width: 40,
+            //     alignment: Alignment.center,
+            //     child: countdown,
+            //   ),
+            // ),
+            IconButton(
+              onPressed: () => Share.text(
+                  'Sopravviveresti?',
+                  'Sei in una situazione di pericolo e hai due opzioni per salvarti: quale delle due sarà la tua salvezza? \n${Platform.isIOS ? 'https://apps.apple.com/app/id1529738913' : 'https://play.google.com/store/apps/details?id=com.hmimo.sopravviveresti'}',
+                  'text/plain'),
+              icon: Icon(
+                Icons.share,
+                size: 40,
+                color: Colors.white,
+              ),
+            ),
           ],
         ),
       ),
@@ -102,48 +83,82 @@ Widget buildGameAppBar(
   );
 }
 
-class BuyNewLives extends StatelessWidget {
-  final Function buyLives;
+class Timer extends StatefulWidget {
+  final Countdown countdown;
 
-  BuyNewLives(this.buyLives);
+  Timer({@required this.countdown});
+  @override
+  _TimerState createState() => _TimerState();
+}
+
+class _TimerState extends State<Timer> with SingleTickerProviderStateMixin {
+  AnimationController timerProgressController;
+  Animation timerAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    timerProgressController = AnimationController(
+      vsync: this,
+      duration: Duration(
+        seconds: widget.countdown.seconds,
+      ),
+    );
+    print("seconds: ${widget.countdown.seconds}");
+    timerAnimation = Tween(begin: 0, end: 30).animate(timerProgressController)
+      ..addListener(() {
+        setState(() {});
+        print("timer");
+      });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return CustomDialog(
-      title: 'Acquista 5 vite',
-      color: Theme.of(context).primaryColor,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 30,
-          vertical: 10,
-        ),
-        child: Column(
-          children: [
-            Text(
-              "Acquista 5 nuove vite da usare nel gioco",
-              style: TextStyle(fontSize: 18),
-              textAlign: TextAlign.center,
-            ),
-            Container(
-              margin: const EdgeInsets.symmetric(
-                vertical: 10,
-                horizontal: 25,
-              ),
-              child: CustomButton(
-                "Acquista",
-                icon: Icon(
-                  Icons.favorite,
-                  color: Colors.red,
-                ),
-                textStyle: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 20,
-                ),
-                onPressed: buyLives,
-              ),
-            ),
-          ],
-        ),
+    return CustomPaint(
+      painter: TimerPainter(
+        mainColor: Theme.of(context).primaryColor,
+        timerProgress: timerAnimation.value,
+      ),
+      child: Container(
+        width: 40,
+        alignment: Alignment.center,
+        child: widget.countdown,
       ),
     );
   }
+}
+
+class TimerPainter extends CustomPainter {
+  final Color mainColor;
+  final int timerProgress;
+
+  TimerPainter({
+    @required this.mainColor,
+    @required this.timerProgress,
+  });
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+
+    final body = Paint()
+      ..color = mainColor
+      ..style = PaintingStyle.fill;
+    final border = Paint()
+      ..color = Colors.white
+      ..style = PaintingStyle.fill;
+
+    // final angle = 3 * pi * (50 / 100);
+
+    // canvas.drawCircle(center, 35, border);
+    double angle = 2 * pi * (timerProgress / 100);
+    print(angle);
+
+    canvas.drawArc(Rect.fromCircle(center: center, radius: 35), -pi / 2, angle,
+        true, border);
+
+    canvas.drawCircle(center, 30, body);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => true;
 }
