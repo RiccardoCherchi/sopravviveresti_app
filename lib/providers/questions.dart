@@ -1,12 +1,9 @@
-import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 
 import '../models/question_type.dart';
 import '../models/game_type.dart';
 
 import '../helpers/db.dart';
-import '../helpers/device.dart';
 
 import '../helpers/api.dart';
 
@@ -34,9 +31,6 @@ class Questions with ChangeNotifier {
   int _correctQuizAnswers = 0;
 
   int _lastCategoryId;
-
-  List _excludeIdsClassic = [];
-  List _exludeIdsGeneralQuestion = [];
 
   int get lastCategoryId {
     return _lastCategoryId;
@@ -77,12 +71,12 @@ class Questions with ChangeNotifier {
     if (gameType == GameType.classic) {
       String url = "/question?";
       if (categoryId != null) {
-        return "${url}category=$categoryId&";
+        return "${url}category=$categoryId";
       } else {
         return url;
       }
     } else {
-      return "/general-culture/question?";
+      return "/general-culture/question";
     }
   }
 
@@ -129,32 +123,7 @@ class Questions with ChangeNotifier {
     }
     String url = _getUrl(gameType, categoryId: categoryId);
 
-    if (gameType == GameType.general_question || gameType == GameType.classic) {
-      if (_exludeIdsGeneralQuestion.isNotEmpty) {
-        print("Initialize exlude general question lists");
-
-        _exludeIdsGeneralQuestion.forEach((e) {
-          url += "exclude=$e&";
-        });
-      } else {
-        print("Initialize exlude classic lists");
-
-        _excludeIdsClassic.forEach((e) {
-          url += "exclude=$e&";
-        });
-      }
-    }
-
     final response = await api.get(path: url);
-
-    if (response.statusCode == 404) {
-      if (gameType == GameType.general_question) {
-        _exludeIdsGeneralQuestion.clear();
-      }
-      if (gameType == GameType.classic) {
-        _excludeIdsClassic.clear();
-      }
-    }
 
     final data = response.data;
 
@@ -188,16 +157,6 @@ class Questions with ChangeNotifier {
       explanation: data['explanation'],
       answers: _getAnwers()..shuffle(),
     );
-
-    if (gameType == GameType.general_question) {
-      _exludeIdsGeneralQuestion.add(_activeQuestion.id);
-      final device_vendor = await getVendorId();
-      print(device_vendor);
-      print("exlude general ids: $_exludeIdsGeneralQuestion");
-    } else {
-      _excludeIdsClassic.add(_activeQuestion.id);
-      print("exlude classic ids: $_excludeIdsClassic");
-    }
 
     notifyListeners();
   }

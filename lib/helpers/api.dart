@@ -132,4 +132,4 @@ class API {
   }
 }
 
-final api = API('https://sopravviveresti.howmuchismyoutfit.com');
+final api = API('http://127.0.0.1:8000');
