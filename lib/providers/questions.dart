@@ -7,6 +7,7 @@ import '../models/question_type.dart';
 import '../models/game_type.dart';
 
 import '../helpers/db.dart';
+import '../helpers/device.dart';
 
 class QuestionData {
   final int id;
@@ -188,6 +189,8 @@ class Questions with ChangeNotifier {
 
     if (gameType == GameType.general_question) {
       _exludeIdsGeneralQuestion.add(_activeQuestion.id);
+      final device_vendor = await getVendorId();
+      print(device_vendor);
       print("exlude general ids: $_exludeIdsGeneralQuestion");
     } else {
       _excludeIdsClassic.add(_activeQuestion.id);
