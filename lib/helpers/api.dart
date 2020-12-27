@@ -132,4 +132,4 @@ class API {
   }
 }
 
-final api = API('https://howmuchismyoutfit.com/');
+final api = API('https://sopravviveresti.howmuchismyoutfit.com');

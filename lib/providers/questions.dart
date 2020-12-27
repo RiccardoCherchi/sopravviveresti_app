@@ -1,13 +1,14 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
 
 import '../models/question_type.dart';
 import '../models/game_type.dart';
 
 import '../helpers/db.dart';
 import '../helpers/device.dart';
+
+import '../helpers/api.dart';
 
 class QuestionData {
   final int id;
@@ -74,21 +75,22 @@ class Questions with ChangeNotifier {
 
   String _getUrl(GameType gameType, {int categoryId}) {
     if (gameType == GameType.classic) {
-      String url = "https://sopravviveresti.howmuchismyoutfit.com/question?";
+      String url = "/question?";
       if (categoryId != null) {
         return "${url}category=$categoryId&";
       } else {
         return url;
       }
     } else {
-      return "https://sopravviveresti.howmuchismyoutfit.com/general-culture/question?";
+      return "/general-culture/question?";
     }
   }
 
   Future getQuizQuestion(int quizId) async {
-    final response = await http.get(
-        "https://sopravviveresti.howmuchismyoutfit.com/quiz/question?quiz_id=$quizId");
-    final List data = json.decode(utf8.decode(response.bodyBytes));
+    final response = await api.get(
+      path: "/quiz/question?quiz_id=$quizId",
+    );
+    final List data = response.data;
 
     final List<QuestionData> quizQuestions = data
         .map((e) => QuestionData(
@@ -143,7 +145,7 @@ class Questions with ChangeNotifier {
       }
     }
 
-    final response = await http.get(url);
+    final response = await api.get(path: url);
 
     if (response.statusCode == 404) {
       if (gameType == GameType.general_question) {
@@ -154,7 +156,7 @@ class Questions with ChangeNotifier {
       }
     }
 
-    final data = json.decode(utf8.decode(response.bodyBytes));
+    final data = response.data;
 
     List<Map<String, dynamic>> _getAnwers() {
       if (gameType == GameType.general_question) {

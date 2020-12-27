@@ -1,7 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
+
+import '../helpers/api.dart';
 
 class Category {
   final int id;
@@ -79,12 +80,10 @@ class Categories with ChangeNotifier {
 
   Future getCategoires({bool isQuiz = false}) async {
     try {
-      String url = isQuiz
-          ? "https://sopravviveresti.howmuchismyoutfit.com/quiz"
-          : "https://sopravviveresti.howmuchismyoutfit.com/categories";
+      String url = isQuiz ? "/quiz" : "/categories";
 
-      final response = await http.get(url);
-      final data = json.decode(utf8.decode(response.bodyBytes));
+      final response = await api.get(path: url);
+      final data = response.data;
       List<Category> _loadedCateogires = [];
       List<Quiz> _loadedQuizzes = [];
       data.forEach((e) {
@@ -103,9 +102,8 @@ class Categories with ChangeNotifier {
   }
 
   Future<List> getPacks() async {
-    final response = await http
-        .get("https://sopravviveresti.howmuchismyoutfit.com/quiz/pack");
-    final data = json.decode(utf8.decode(response.bodyBytes));
+    final response = await api.get(path: "/quiz/pack");
+    final data = response.data;
 
     if (response.statusCode != 404) {
       List<QuizPack> _packs = [];
@@ -118,9 +116,8 @@ class Categories with ChangeNotifier {
   }
 
   Future getPackByQuiz(int quizId) async {
-    final response = await http
-        .get("https://sopravviveresti.howmuchismyoutfit.com/quiz/$quizId/pack");
-    final data = json.decode(utf8.decode(response.bodyBytes));
+    final response = await api.get(path: "/quiz/$quizId/pack");
+    final data = response.data;
 
     final quizPack = QuizPack.fromJson(data);
     return quizPack;
