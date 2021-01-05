@@ -116,7 +116,9 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                 Container(
                                   child: CustomButton(
                                     _categoryId == null
-                                        ? _random ? "Casuale" : "Categorie"
+                                        ? _random
+                                            ? "Casuale"
+                                            : "Categorie"
                                         : _categories
                                             .categories[_categoryId - 1].name,
                                     color: Theme.of(context).primaryColor,
@@ -206,12 +208,14 @@ class CategoryModal extends StatelessWidget {
                                 icon: Icon(Icons.add),
                               ),
                             )
-                          : CustomButton(
-                              "Casuale",
+                          : CustomButton("Casuale",
                               icon: Icon(Icons.add),
                               color: Theme.of(context).primaryColor,
-                              onPressed: () => _chooseCategory(random: true),
-                            ),
+                              onPressed: () {
+                              Provider.of<Questions>(context, listen: false)
+                                  .deleteLastCategoryId();
+                              _chooseCategory(random: true);
+                            }),
                     ),
                     itemCount: _categories.categories.length + 1,
                   ),

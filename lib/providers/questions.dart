@@ -57,6 +57,10 @@ class Questions with ChangeNotifier {
     _correctQuizAnswers = value;
   }
 
+  void deleteLastCategoryId() {
+    _lastCategoryId = null;
+  }
+
   QuestionData get activeQuestion {
     return _activeQuestion;
   }
