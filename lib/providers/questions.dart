@@ -80,7 +80,12 @@ class Questions with ChangeNotifier {
         return url;
       }
     } else {
-      return "/general-culture/question";
+      String url = "/general-culture/question?";
+      if (categoryId != null) {
+        return "${url}category=$categoryId";
+      } else {
+        return url;
+      }
     }
   }
 

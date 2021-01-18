@@ -3,13 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../models/game_type.dart';
-
 import '../providers/categories.dart';
-import '../providers/questions.dart';
 
 import '../screens/categories.dart';
-import '../screens/question.dart';
 import '../screens/quizzes.dart';
 
 import '../widgets/game_card.dart';
@@ -21,7 +17,6 @@ class ChooseGame extends StatelessWidget {
   Widget build(BuildContext context) {
     final _scaffoldKey = GlobalKey<ScaffoldState>();
     final _categories = Provider.of<Categories>(context, listen: false);
-    final _questions = Provider.of<Questions>(context, listen: false);
 
     void showSocketError() async {
       _scaffoldKey.currentState.showSnackBar(
@@ -57,11 +52,14 @@ class ChooseGame extends StatelessWidget {
 
     void _openGeneralCulture() async {
       try {
-        await _questions.getNewQuestion(gameType: GameType.general_question);
-        Navigator.of(context).pushNamed(Question.routeName, arguments: {
-          "isGeneralCultureQuestion": true,
-          "isQuizQuestion": false,
-        });
+        await _categories.getCategoires(isGeneralCulture: true);
+        Navigator.of(context)
+            .pushNamed(CategoriesScreen.routeName, arguments: true);
+        // await _questions.getNewQuestion(gameType: GameType.general_question);
+        // Navigator.of(context).pushNamed(Question.routeName, arguments: {
+        //   "isGeneralCultureQuestion": true,
+        //   "isQuizQuestion": false,
+        // });
       } on SocketException catch (_) {
         showSocketError();
       }

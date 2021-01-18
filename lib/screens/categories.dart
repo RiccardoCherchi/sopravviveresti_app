@@ -27,15 +27,27 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   Widget build(BuildContext context) {
     final _questions = Provider.of<Questions>(context, listen: false);
     final _categories = Provider.of<Categories>(context, listen: false);
+    final _isGeneralCulture = ModalRoute.of(context).settings.arguments as bool;
 
     final _size = MediaQuery.of(context).size;
 
     void _loadQuestion([int categoryId]) async {
-      await _questions.getNewQuestion(
-        categoryId: categoryId,
-        gameType: GameType.classic,
-      );
-      Navigator.of(context).pushNamed(Question.routeName);
+      if (_isGeneralCulture) {
+        await _questions.getNewQuestion(
+          gameType: GameType.general_question,
+          categoryId: categoryId,
+        );
+        Navigator.of(context).pushNamed(Question.routeName, arguments: {
+          "isGeneralCultureQuestion": true,
+          "isQuizQuestion": false,
+        });
+      } else {
+        await _questions.getNewQuestion(
+          categoryId: categoryId,
+          gameType: GameType.classic,
+        );
+        Navigator.of(context).pushNamed(Question.routeName);
+      }
     }
 
     void _openCategoryChooser() {
@@ -96,7 +108,9 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                             vertical: _size.height * .07,
                           ),
                           child: SvgPicture.asset(
-                            'assets/images/routePath.svg',
+                            _isGeneralCulture != null
+                                ? 'assets/images/route_path_quiz.svg'
+                                : 'assets/images/route_path_classic.svg',
                           ),
                         ),
                       ],
@@ -134,7 +148,9 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                 if (_size.height > 660)
                                   Container(
                                     child: SvgPicture.asset(
-                                      'assets/images/categories.svg',
+                                      _isGeneralCulture != null
+                                          ? 'assets/images/categories_quiz.svg'
+                                          : 'assets/images/categories_classic.svg',
                                     ),
                                   ),
                                 SizedBox(

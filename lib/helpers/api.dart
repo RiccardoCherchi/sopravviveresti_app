@@ -132,4 +132,4 @@ class API {
   }
 }
 
-final api = API('https://sopravviveresti.howmuchismyoutfit.com');
+final api = API('https://ee03b10c6a29.ngrok.io');

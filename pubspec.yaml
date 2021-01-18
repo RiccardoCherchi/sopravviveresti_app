@@ -68,8 +68,10 @@ flutter:
   assets:
     - assets/images/background.jpg
     - assets/images/background2.jpg
-    - assets/images/categories.svg
-    - assets/images/routePath.svg
+    - assets/images/categories_quiz.svg
+    - assets/images/categories_classic.svg
+    - assets/images/route_path_classic.svg
+    - assets/images/route_path_quiz.svg
     - assets/images/earth_draw.svg
     - assets/images/fire_draw.svg
     - assets/images/mountain_draw.svg

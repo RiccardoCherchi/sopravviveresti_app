@@ -28,15 +28,23 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   @override
-  void didChangeDependencies() {
+  void didChangeDependencies() async {
     super.didChangeDependencies();
-    precachePicture(
-        ExactAssetPicture(
-            SvgPicture.svgStringDecoder, 'assets/images/categories.svg'),
+    await precachePicture(
+        ExactAssetPicture(SvgPicture.svgStringDecoder,
+            'assets/images/categories_classic.svg'),
         null);
-    precachePicture(
+    await precachePicture(
+        ExactAssetPicture(SvgPicture.svgStringDecoder,
+            'assets/images/route_path_classic.svg'),
+        null);
+    await precachePicture(
         ExactAssetPicture(
-            SvgPicture.svgStringDecoder, 'assets/images/routePath.svg'),
+            SvgPicture.svgStringDecoder, 'assets/images/route_path_quiz.svg'),
+        null);
+    await precachePicture(
+        ExactAssetPicture(
+            SvgPicture.svgStringDecoder, 'assets/images/categories_quiz.svg'),
         null);
   }
 

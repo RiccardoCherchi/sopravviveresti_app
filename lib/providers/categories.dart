@@ -78,9 +78,14 @@ class Categories with ChangeNotifier {
     return [..._quizzes];
   }
 
-  Future getCategoires({bool isQuiz = false}) async {
+  Future getCategoires(
+      {bool isQuiz = false, bool isGeneralCulture = false}) async {
     try {
-      String url = isQuiz ? "/quiz" : "/categories";
+      String url = isQuiz
+          ? "/quiz"
+          : isGeneralCulture
+              ? "/general-culture/categories"
+              : "/categories";
 
       final response = await api.get(path: url);
       final data = response.data;
